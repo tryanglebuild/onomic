@@ -221,7 +221,7 @@ describe('invites', () => {
     expect(error!.message).toMatch(/invite_not_pending/)
   })
 
-  it('marks an expired invite as expired and rejects acceptance', async () => {
+  it('rejects acceptance of an expired invite', async () => {
     const expiredInviteId = crypto.randomUUID()
     const { adminClient } = await import('../helpers/supabase-test-clients')
 
@@ -240,14 +240,6 @@ describe('invites', () => {
 
     expect(error).not.toBeNull()
     expect(error!.message).toMatch(/invite_expired/)
-
-    const { data: invite } = await adminClient()
-      .from('workspace_invites')
-      .select('status')
-      .eq('id', expiredInviteId)
-      .single()
-
-    expect(invite!.status).toBe('expired')
   })
 })
 
@@ -289,6 +281,27 @@ describe('membership management', () => {
       .eq('workspace_id', familyWorkspaceId)
       .eq('user_id', userA.id)
 
+    // RLS silently filters out rows the caller isn't allowed to delete
+    // rather than erroring — assert userA's membership still exists.
+    expect(error).toBeNull()
+
+    const { data } = await adminClient()
+      .from('workspace_members')
+      .select('user_id')
+      .eq('workspace_id', familyWorkspaceId)
+      .eq('user_id', userA.id)
+
+    expect(data).toHaveLength(1)
+  })
+
+  it('blocks removing the last owner of a workspace', async () => {
+    const { error } = await userA.client
+      .from('workspace_members')
+      .delete()
+      .eq('workspace_id', familyWorkspaceId)
+      .eq('user_id', userA.id)
+
     expect(error).not.toBeNull()
+    expect(error!.message).toMatch(/cannot remove the last owner/)
   })
 })

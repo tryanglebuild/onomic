@@ -74,11 +74,44 @@ begin
 
   return new;
 end;
-$$ language plpgsql;
+$$ language plpgsql security definer set search_path = public;
 
 create trigger trg_enforce_personal_workspace_single_member
 before insert on workspace_members
 for each row execute function enforce_personal_workspace_single_member();
+
+-- Prevents deleting the last owner of a workspace, and prevents any
+-- deletion from a personal workspace (its single membership row must
+-- never be removed, or the user is permanently locked out of the app).
+create or replace function prevent_unsafe_member_removal()
+returns trigger as $$
+declare
+  ws_type workspace_type;
+  owner_count int;
+begin
+  select type into ws_type from workspaces where id = old.workspace_id;
+
+  if ws_type = 'personal' then
+    raise exception 'cannot remove membership from a personal workspace';
+  end if;
+
+  if old.role = 'owner' then
+    select count(*) into owner_count
+    from workspace_members
+    where workspace_id = old.workspace_id and role = 'owner';
+
+    if owner_count <= 1 then
+      raise exception 'cannot remove the last owner of a workspace';
+    end if;
+  end if;
+
+  return old;
+end;
+$$ language plpgsql security definer set search_path = public;
+
+create trigger trg_prevent_unsafe_member_removal
+before delete on workspace_members
+for each row execute function prevent_unsafe_member_removal();
 
 -- Every new auth user gets a personal workspace automatically.
 create or replace function handle_new_user_personal_workspace()
@@ -133,7 +166,7 @@ declare
   v_invite workspace_invites%rowtype;
   v_user_email text;
 begin
-  select email into v_user_email from auth.users where id = auth.uid();
+  select email into v_user_email from auth.users where id = auth.uid() and email_confirmed_at is not null;
 
   select * into v_invite from workspace_invites where id = p_invite_id for update;
 
@@ -146,7 +179,6 @@ begin
   end if;
 
   if v_invite.expires_at < now() then
-    update workspace_invites set status = 'expired' where id = p_invite_id;
     raise exception 'invite_expired';
   end if;
 
@@ -176,6 +208,25 @@ $$ language sql security definer set search_path = public;
 
 grant execute on function get_invite_preview(uuid) to anon, authenticated;
 
+create or replace function is_workspace_member(p_workspace_id uuid)
+returns boolean language sql security definer stable set search_path = public as $$
+  select exists (
+    select 1 from workspace_members
+    where workspace_id = p_workspace_id and user_id = auth.uid()
+  );
+$$;
+
+create or replace function is_workspace_owner(p_workspace_id uuid)
+returns boolean language sql security definer stable set search_path = public as $$
+  select exists (
+    select 1 from workspace_members
+    where workspace_id = p_workspace_id and user_id = auth.uid() and role = 'owner'
+  );
+$$;
+
+grant execute on function is_workspace_member(uuid) to authenticated;
+grant execute on function is_workspace_owner(uuid) to authenticated;
+
 -- Row Level Security
 
 alter table workspaces enable row level security;
@@ -191,61 +242,26 @@ for select using (id = auth.uid());
 -- feature's scope.
 
 create policy workspaces_select on workspaces
-for select using (
-  exists (
-    select 1 from workspace_members wm
-    where wm.workspace_id = workspaces.id and wm.user_id = auth.uid()
-  )
-);
+for select using (is_workspace_member(id));
 
 -- No client-facing INSERT policy on workspaces or workspace_members:
 -- every row is created by a SECURITY DEFINER function above
 -- (signup trigger, create_family_workspace, accept_workspace_invite).
 
 create policy workspace_members_select on workspace_members
-for select using (
-  exists (
-    select 1 from workspace_members wm
-    where wm.workspace_id = workspace_members.workspace_id and wm.user_id = auth.uid()
-  )
-);
+for select using (is_workspace_member(workspace_id));
 
 create policy workspace_members_delete on workspace_members
-for delete using (
-  exists (
-    select 1 from workspace_members wm
-    where wm.workspace_id = workspace_members.workspace_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
-);
+for delete using (is_workspace_owner(workspace_id));
 
 create policy workspace_invites_select on workspace_invites
-for select using (
-  exists (
-    select 1 from workspace_members wm
-    where wm.workspace_id = workspace_invites.workspace_id and wm.user_id = auth.uid()
-  )
-);
+for select using (is_workspace_member(workspace_id));
 
 create policy workspace_invites_insert on workspace_invites
 for insert with check (
-  exists (
-    select 1 from workspace_members wm
-    join workspaces w on w.id = wm.workspace_id
-    where wm.workspace_id = workspace_invites.workspace_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-      and w.type = 'family'
-  )
+  is_workspace_owner(workspace_id)
+  and exists (select 1 from workspaces w where w.id = workspace_invites.workspace_id and w.type = 'family')
 );
 
 create policy workspace_invites_delete on workspace_invites
-for delete using (
-  exists (
-    select 1 from workspace_members wm
-    where wm.workspace_id = workspace_invites.workspace_id
-      and wm.user_id = auth.uid()
-      and wm.role = 'owner'
-  )
-);
+for delete using (is_workspace_owner(workspace_id));

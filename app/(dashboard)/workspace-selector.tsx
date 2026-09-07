@@ -1,3 +1,5 @@
+'use client'
+
 import type { WorkspaceSummary } from '@/lib/workspaces/queries'
 import { switchWorkspace } from './switch-workspace/actions'
 

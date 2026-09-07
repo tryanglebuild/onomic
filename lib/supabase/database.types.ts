@@ -92,18 +92,6 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
         Relationships: []
       }
-      workspace_members_with_email: {
-        Row: {
-          workspace_id: string
-          user_id: string
-          role: 'owner' | 'member'
-          joined_at: string
-          email: string
-        }
-        Insert: never
-        Update: never
-        Relationships: []
-      }
     }
     Views: Record<string, never>
     Functions: {
@@ -122,6 +110,15 @@ export type Database = {
           invited_email: string
           status: 'pending' | 'accepted' | 'expired'
           expires_at: string
+        }[]
+      }
+      get_workspace_members_with_email: {
+        Args: { p_workspace_id: string }
+        Returns: {
+          user_id: string
+          role: 'owner' | 'member'
+          joined_at: string
+          email: string
         }[]
       }
     }

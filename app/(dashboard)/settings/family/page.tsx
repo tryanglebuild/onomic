@@ -22,10 +22,9 @@ export default async function FamilySettingsPage({
         .eq('workspace_id', w.id)
         .eq('status', 'pending')
 
-      const { data: members } = await supabase
-        .from('workspace_members_with_email')
-        .select('user_id, role, email')
-        .eq('workspace_id', w.id)
+      const { data: members } = await supabase.rpc('get_workspace_members_with_email', {
+        p_workspace_id: w.id,
+      })
 
       return { workspace: w, invites: data ?? [], members: members ?? [] }
     })
