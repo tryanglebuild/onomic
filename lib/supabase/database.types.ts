@@ -84,6 +84,8 @@ export type Database = {
           role: 'user' | 'admin' | 'support'
           full_name: string | null
           birth_date: string | null
+          handle: string
+          avatar_path: string | null
           created_at: string
         }
         Insert: {
@@ -91,9 +93,17 @@ export type Database = {
           role?: 'user' | 'admin' | 'support'
           full_name?: string | null
           birth_date?: string | null
+          handle: string
+          avatar_path?: string | null
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
+        Relationships: []
+      }
+      reserved_handles: {
+        Row: { handle: string }
+        Insert: { handle: string }
+        Update: Partial<Database['public']['Tables']['reserved_handles']['Insert']>
         Relationships: []
       }
     }
@@ -124,6 +134,14 @@ export type Database = {
           joined_at: string
           email: string
         }[]
+      }
+      is_handle_available: {
+        Args: { p_handle: string }
+        Returns: boolean
+      }
+      suggest_handle: {
+        Args: { p_full_name: string }
+        Returns: string
       }
     }
     Enums: {
