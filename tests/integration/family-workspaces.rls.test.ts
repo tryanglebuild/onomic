@@ -136,6 +136,7 @@ describe('invites', () => {
       id: pendingInviteId,
       workspace_id: familyWorkspaceId,
       invited_email: userB.email,
+      created_by: userA.id,
       token: `placeholder-token-${pendingInviteId}`,
       expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString(),
     })
@@ -148,6 +149,7 @@ describe('invites', () => {
       id: crypto.randomUUID(),
       workspace_id: familyWorkspaceId,
       invited_email: 'someone-else@onomic.test',
+      created_by: userC.id,
       token: 'irrelevant-token',
       expires_at: new Date(Date.now() + 1000 * 60 * 60).toISOString(),
     })
