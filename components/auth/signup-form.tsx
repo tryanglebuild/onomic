@@ -50,12 +50,14 @@ export function SignupForm() {
       const reset = setTimeout(() => setAsyncStatus(null), 0)
       return () => clearTimeout(reset)
     }
+    let cancelled = false
     const checkingTimeout = setTimeout(() => setAsyncStatus('checking'), 0)
     const resultTimeout = setTimeout(async () => {
       const available = await checkHandleAvailability(normalizedHandle)
-      setAsyncStatus(available ? 'available' : 'taken')
+      if (!cancelled) setAsyncStatus(available ? 'available' : 'taken')
     }, 350)
     return () => {
+      cancelled = true
       clearTimeout(checkingTimeout)
       clearTimeout(resultTimeout)
     }
