@@ -121,6 +121,11 @@ begin
 end;
 $$ language plpgsql security definer set search_path = public;
 
+-- anon, authenticated (not just authenticated): handle checking must work
+-- during signup, before the user has a session — same reasoning as
+-- get_invite_preview's anon, authenticated grant.
+grant execute on function is_handle_available(text) to anon, authenticated;
+
 create or replace function suggest_handle(p_full_name text)
 returns text as $$
 declare
@@ -151,6 +156,10 @@ begin
   end loop;
 end;
 $$ language plpgsql security definer set search_path = public;
+
+-- anon, authenticated: suggestion must also work during signup, before the
+-- user has a session, same reasoning as is_handle_available above.
+grant execute on function suggest_handle(text) to anon, authenticated;
 
 -- ============================================================================
 -- 6. Avatars bucket — public (read), write restricted to the user's own
