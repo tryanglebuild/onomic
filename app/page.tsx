@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getUserWorkspaces } from '@/lib/workspaces/queries'
 import { getActiveWorkspaceId } from '@/lib/workspaces/active-workspace'
+import { LandingPage } from '@/components/marketing/landing-page'
 
 export default async function RootPage() {
   const supabase = await createClient()
@@ -10,7 +11,7 @@ export default async function RootPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/login')
+    return <LandingPage />
   }
 
   const workspaces = await getUserWorkspaces(supabase)

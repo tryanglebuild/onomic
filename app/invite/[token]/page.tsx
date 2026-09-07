@@ -1,6 +1,18 @@
+import Link from 'next/link'
+import { ShieldAlert, Users } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { verifyInviteToken } from '@/lib/workspaces/invite-token'
 import { acceptInvite } from './actions'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+
+function InviteScreen({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-paper p-6">
+      <Card className="w-full max-w-sm">{children}</Card>
+    </main>
+  )
+}
 
 export default async function InvitePage({
   params,
@@ -25,23 +37,52 @@ export default async function InvitePage({
 
   if (!preview || preview.status !== 'pending') {
     return (
-      <main className="mx-auto max-w-sm p-8">
-        <p>Este convite é inválido ou já expirou.</p>
-      </main>
+      <InviteScreen>
+        <CardHeader>
+          <span className="flex size-10 items-center justify-center rounded-full bg-danger/10 text-danger">
+            <ShieldAlert className="size-5" aria-hidden />
+          </span>
+          <CardTitle className="mt-3">Convite inválido</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CardDescription>
+            Este convite é inválido ou já expirou. Peça a quem convidou para
+            enviar um novo.
+          </CardDescription>
+          <Button asChild variant="outline" className="mt-6 w-full">
+            <Link href="/login">Voltar para o login</Link>
+          </Button>
+        </CardContent>
+      </InviteScreen>
     )
   }
 
   const boundAccept = acceptInvite.bind(null, token)
 
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-4 p-8">
-      <h1 className="text-xl font-semibold">Convite para {preview.workspace_name}</h1>
-      {error && <p className="text-red-600">Não foi possível aceitar o convite: {error}</p>}
-      <form action={boundAccept}>
-        <button type="submit" className="rounded bg-black p-2 text-white">
-          Aceitar convite
-        </button>
-      </form>
-    </main>
+    <InviteScreen>
+      <CardHeader>
+        <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
+          <Users className="size-5" aria-hidden />
+        </span>
+        <CardTitle className="mt-3">Convite para {preview.workspace_name}</CardTitle>
+        <CardDescription>
+          Ao aceitar, vai passar a ver e a gerir as contas partilhadas deste
+          workspace.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {error && (
+          <p className="mb-4 rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger">
+            Não foi possível aceitar o convite: {error}
+          </p>
+        )}
+        <form action={boundAccept}>
+          <Button type="submit" className="w-full">
+            Aceitar convite
+          </Button>
+        </form>
+      </CardContent>
+    </InviteScreen>
   )
 }

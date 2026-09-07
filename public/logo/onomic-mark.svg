@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="Onomic">
+  <title>Onomic</title>
+  <!--
+    A solid disc (the "O") with the "n" cut through it in true negative
+    space via a mask — reads as a plain dot at small sizes, reveals the
+    letter up close. The cutout path is normalized to pathLength="100" so
+    a stroke-dasharray/stroke-dashoffset draw-in animation (see
+    components/ui/logo-loader.tsx) never needs the real geometry recalculated.
+  -->
+  <mask id="mark-n-cutout">
+    <rect x="0" y="0" width="120" height="120" fill="white" />
+    <path
+      id="mark-n"
+      d="M47,80 L47,54 A13,13 0 0 1 73,54 L73,80"
+      stroke="black"
+      stroke-width="12"
+      fill="none"
+      stroke-linecap="round"
+      pathLength="100"
+    />
+  </mask>
+  <circle id="mark-o" cx="60" cy="60" r="42" fill="#10192b" mask="url(#mark-n-cutout)" />
+</svg>

@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Onomic Design Tokens
+   Light theme by default. Warm, editorial, quietly premium — closer to a
+   private-banking statement than a typical SaaS dashboard. Serious tones
+   (deep navy, ink) carry the trust; the jade green carries the optimism.
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neutrals — warm paper, not clinical white */
+  --color-paper: #f7f5f1;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #eeece5;
+  --color-ink: #14181c;
+  --color-ink-soft: #40474d;
+  --color-muted: #6b7178;
+  --color-border: #e2ded4;
+  --color-border-strong: #cfc9ba;
+
+  /* Brand — vivid but slightly desaturated jade green (primary action / growth) */
+  --color-primary: #1f9d6b;
+  --color-primary-strong: #167a54;
+  --color-primary-soft: #dcefe4;
+  --color-primary-ink: #0d3c29;
+
+  /* Deep navy — the "serious" register: nav, footer, dark hero panels */
+  --color-navy: #10192b;
+  --color-navy-soft: #1c2a45;
+  --color-navy-ink: #aebbd6;
+
+  /* Sky blue — informational accents, links, secondary CTAs */
+  --color-sky: #3d6fe0;
+  --color-sky-soft: #e8effc;
+
+  /* Violet — the "happiness"/delight accent: highlights, tags, vault/challenge features */
+  --color-violet: #7c6ae8;
+  --color-violet-soft: #ece9fb;
+
+  /* Signals */
+  --color-warning: #b45309;
+  --color-danger: #c0362c;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2.25rem;
+
+  --shadow-soft: 0 1px 2px rgba(20, 24, 28, 0.04), 0 8px 24px -12px rgba(20, 24, 28, 0.12);
+  --shadow-lifted: 0 4px 12px rgba(20, 24, 28, 0.06), 0 24px 48px -16px rgba(20, 24, 28, 0.18);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--color-primary);
+  --color-primary-strong: var(--color-primary-strong);
+  --color-primary-soft: var(--color-primary-soft);
+  --color-primary-ink: var(--color-primary-ink);
+
+  --color-navy: var(--color-navy);
+  --color-navy-soft: var(--color-navy-soft);
+  --color-navy-ink: var(--color-navy-ink);
+
+  --color-sky: var(--color-sky);
+  --color-sky-soft: var(--color-sky-soft);
+
+  --color-violet: var(--color-violet);
+  --color-violet-soft: var(--color-violet-soft);
+
+  --color-warning: var(--color-warning);
+  --color-danger: var(--color-danger);
+
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-fraunces);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lifted: var(--shadow-lifted);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01" 1, "cv05" 1;
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  letter-spacing: -0.01em;
+}
+
+/* Signature detail: a faint film-grain texture over flat colour fields,
+   applied via a utility class rather than globally, so it stays deliberate. */
+.grain-overlay {
+  position: relative;
+  isolation: isolate;
+}
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Onomic mark, loading state: the disc (the "O") fades in solid, then the
+   "n" is carved into it as the mask's cutout path draws in, then both hold
+   and fade before the loop restarts. The cutout path is normalized to
+   pathLength="100" (see components/ui/logomark.tsx) so the dash values
+   below never need to match its real geometry. */
+.onomic-mark-loading .onomic-mark-n {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: onomic-reveal-n 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.onomic-mark-loading .onomic-mark-o {
+  animation: onomic-fade-o 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes onomic-fade-o {
+  0% { opacity: 0; }
+  10%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes onomic-reveal-n {
+  0%, 25% { stroke-dashoffset: 100; }
+  60%, 88% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes onomic-cursor-blink {
+  0%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* The generic squash above would freeze mid-draw or mid-fade — show the
+     finished mark instead of a flicker. */
+  .onomic-mark-loading .onomic-mark-o,
+  .onomic-mark-loading .onomic-mark-n {
+    animation: none !important;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
 }

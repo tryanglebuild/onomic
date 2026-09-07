@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <mask id="favicon-n-cutout">
+    <rect x="0" y="0" width="120" height="120" fill="white" />
+    <path d="M47,80 L47,54 A13,13 0 0 1 73,54 L73,80" stroke="black" stroke-width="12" fill="none" stroke-linecap="round" />
+  </mask>
+  <circle cx="60" cy="60" r="42" fill="#10192b" mask="url(#favicon-n-cutout)" />
+</svg>

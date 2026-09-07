@@ -1,4 +1,9 @@
+import Link from 'next/link'
 import { signUp } from '../actions'
+import { AuthShell } from '@/components/auth/auth-shell'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default async function SignupPage({
   searchParams,
@@ -8,19 +13,38 @@ export default async function SignupPage({
   const { error } = await searchParams
 
   return (
-    <main className="mx-auto flex max-w-sm flex-col gap-4 p-8">
-      <h1 className="text-xl font-semibold">Criar conta</h1>
-      {error && <p className="text-red-600">{error}</p>}
-      <form action={signUp} className="flex flex-col gap-3">
-        <input name="email" type="email" placeholder="Email" required className="rounded border p-2" />
-        <input name="password" type="password" placeholder="Palavra-passe" required minLength={8} className="rounded border p-2" />
-        <button type="submit" className="rounded bg-black p-2 text-white">
+    <AuthShell eyebrow="Comece agora" title="Criar a sua conta">
+      {error && (
+        <p className="mb-4 rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger">
+          {error}
+        </p>
+      )}
+      <form action={signUp} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" name="email" type="email" placeholder="voce@email.com" required />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">Palavra-passe</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Mínimo 8 caracteres"
+            required
+            minLength={8}
+          />
+        </div>
+        <Button type="submit" className="mt-2 w-full">
           Criar conta
-        </button>
+        </Button>
       </form>
-      <a href="/login" className="text-sm underline">
-        Já tens conta? Entrar
-      </a>
-    </main>
+      <p className="mt-6 text-sm text-muted">
+        Já tens conta?{' '}
+        <Link href="/login" className="font-medium text-primary-strong hover:underline">
+          Entrar
+        </Link>
+      </p>
+    </AuthShell>
   )
 }
