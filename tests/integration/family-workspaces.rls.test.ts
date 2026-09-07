@@ -181,6 +181,35 @@ describe('invites', () => {
     expect(membership!.role).toBe('member')
   })
 
+  it('rejects acceptance when the caller\'s email does not match the invite', async () => {
+    const mismatchedInviteId = crypto.randomUUID()
+    const { adminClient } = await import('../helpers/supabase-test-clients')
+
+    await adminClient().from('workspace_invites').insert({
+      id: mismatchedInviteId,
+      workspace_id: familyWorkspaceId,
+      invited_email: userB.email,
+      token: `placeholder-token-${mismatchedInviteId}`,
+      created_by: userA.id,
+      expires_at: new Date(Date.now() + 1000 * 60 * 60).toISOString(),
+    })
+
+    const { error } = await userC.client.rpc('accept_workspace_invite', {
+      p_invite_id: mismatchedInviteId,
+    })
+
+    expect(error).not.toBeNull()
+    expect(error!.message).toMatch(/invite_email_mismatch/)
+
+    const { data: invite } = await adminClient()
+      .from('workspace_invites')
+      .select('status')
+      .eq('id', mismatchedInviteId)
+      .single()
+
+    expect(invite!.status).toBe('pending')
+  })
+
   it('rejects accepting the same invite twice', async () => {
     const { error } = await userB.client.rpc('accept_workspace_invite', {
       p_invite_id: pendingInviteId,

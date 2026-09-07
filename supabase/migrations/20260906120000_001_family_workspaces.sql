@@ -125,11 +125,16 @@ grant execute on function create_family_workspace(text) to authenticated;
 -- Validates and consumes an invite. The token itself is verified in the
 -- application layer (HMAC signature + expiry) before this is ever called;
 -- this function re-checks the invite's DB state as defense in depth.
+-- It also independently verifies the accepting user's email matches the
+-- invite, so this check does not depend on the application layer at all.
 create or replace function accept_workspace_invite(p_invite_id uuid)
 returns void as $$
 declare
   v_invite workspace_invites%rowtype;
+  v_user_email text;
 begin
+  select email into v_user_email from auth.users where id = auth.uid();
+
   select * into v_invite from workspace_invites where id = p_invite_id for update;
 
   if not found then
@@ -143,6 +148,10 @@ begin
   if v_invite.expires_at < now() then
     update workspace_invites set status = 'expired' where id = p_invite_id;
     raise exception 'invite_expired';
+  end if;
+
+  if lower(v_user_email) <> lower(v_invite.invited_email) then
+    raise exception 'invite_email_mismatch';
   end if;
 
   insert into workspace_members (workspace_id, user_id, role)
