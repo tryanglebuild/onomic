@@ -150,7 +150,7 @@ begin
     raise exception 'invite_expired';
   end if;
 
-  if lower(v_user_email) <> lower(v_invite.invited_email) then
+  if v_user_email is null or lower(v_user_email) <> lower(v_invite.invited_email) then
     raise exception 'invite_email_mismatch';
   end if;
 
