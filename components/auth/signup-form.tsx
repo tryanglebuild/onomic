@@ -26,8 +26,14 @@ export function SignupForm() {
     if (handleTouched || name.trim().length === 0) return
     const timeout = setTimeout(() => {
       startTransition(async () => {
-        const suggestion = await suggestHandle(name)
-        setHandle(suggestion)
+        try {
+          const suggestion = await suggestHandle(name)
+          setHandle(suggestion)
+        } catch {
+          // Silent no-op — the handle field just doesn't get auto-filled;
+          // the user can still type one manually and it's re-validated
+          // server-side in signUp.
+        }
       })
     }, 400)
     return () => clearTimeout(timeout)
@@ -53,8 +59,14 @@ export function SignupForm() {
     let cancelled = false
     const checkingTimeout = setTimeout(() => setAsyncStatus('checking'), 0)
     const resultTimeout = setTimeout(async () => {
-      const available = await checkHandleAvailability(normalizedHandle)
-      if (!cancelled) setAsyncStatus(available ? 'available' : 'taken')
+      try {
+        const available = await checkHandleAvailability(normalizedHandle)
+        if (!cancelled) setAsyncStatus(available ? 'available' : 'taken')
+      } catch {
+        // Silent no-op — leave status as-is; real validation happens
+        // server-side in signUp regardless.
+        if (!cancelled) setAsyncStatus(null)
+      }
     }, 350)
     return () => {
       cancelled = true
@@ -67,9 +79,19 @@ export function SignupForm() {
 
   async function handleSuggestAgain() {
     startTransition(async () => {
-      const suggestion = await suggestHandle(name || 'user')
-      setHandleTouched(false)
-      setHandle(suggestion)
+      try {
+        const suggestion = await suggestHandle(name || 'user')
+        // Deliberately do NOT reset handleTouched to false here: doing so
+        // would re-arm the auto-suggest effect above (deps: [name,
+        // handleTouched]), whose debounced timer would then fire ~400ms
+        // later and overwrite the suggestion this button just set. Marking
+        // the handle as touched keeps this button as the sole source of
+        // truth until the user edits the name or handle again.
+        setHandleTouched(true)
+        setHandle(suggestion)
+      } catch {
+        // Silent no-op — button just doesn't update the handle this time.
+      }
     })
   }
 

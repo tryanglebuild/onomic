@@ -84,7 +84,7 @@ export type Database = {
           role: 'user' | 'admin' | 'support'
           full_name: string | null
           birth_date: string | null
-          handle: string
+          handle: string | null
           avatar_path: string | null
           created_at: string
         }

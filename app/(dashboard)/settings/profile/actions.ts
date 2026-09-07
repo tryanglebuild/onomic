@@ -29,7 +29,11 @@ export async function updateAvatar(formData: FormData) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const path = avatarPathFor(user!.id)
+  if (!user) {
+    redirect('/login')
+  }
+
+  const path = avatarPathFor(user.id)
 
   const { error: uploadError } = await supabase.storage
     .from(AVATAR_BUCKET)
@@ -39,7 +43,7 @@ export async function updateAvatar(formData: FormData) {
     redirectWithError(uploadError.message)
   }
 
-  const { error: updateError } = await supabase.from('profiles').update({ avatar_path: path }).eq('id', user!.id)
+  const { error: updateError } = await supabase.from('profiles').update({ avatar_path: path }).eq('id', user.id)
 
   if (updateError) {
     redirectWithError(updateError.message)

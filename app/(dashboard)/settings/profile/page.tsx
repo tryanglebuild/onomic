@@ -20,9 +20,16 @@ export default async function ProfileSettingsPage({
     .eq('id', user!.id)
     .single()
 
+  // Deliberate cache-busting: this is a Server Component render (not a
+  // client render the React Compiler needs to memoize), and a changing
+  // value here is exactly the point — without it the browser/CDN would
+  // keep serving a stale avatar after re-upload, since avatarPathFor()
+  // returns a fixed key per user.
+  /* eslint-disable react-hooks/purity */
   const avatarUrl = profile?.avatar_path
-    ? supabase.storage.from(AVATAR_BUCKET).getPublicUrl(profile.avatar_path).data.publicUrl
+    ? `${supabase.storage.from(AVATAR_BUCKET).getPublicUrl(profile.avatar_path).data.publicUrl}?v=${Date.now()}`
     : null
+  /* eslint-enable react-hooks/purity */
 
   return (
     <Card className="max-w-lg">
@@ -40,7 +47,7 @@ export default async function ProfileSettingsPage({
           <dt className="text-muted">Nome</dt>
           <dd>{profile?.full_name ?? '—'}</dd>
           <dt className="text-muted">Handle</dt>
-          <dd>@{profile?.handle}</dd>
+          <dd>{profile?.handle ? `@${profile.handle}` : '—'}</dd>
         </dl>
       </CardContent>
     </Card>
