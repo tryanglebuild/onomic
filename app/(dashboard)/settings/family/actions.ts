@@ -52,3 +52,19 @@ export async function createInvite(workspaceId: string, formData: FormData) {
   revalidatePath('/settings/family')
   redirect(`/settings/family?invite_link=${encodeURIComponent(buildInviteUrl(token))}`)
 }
+
+export async function removeMember(workspaceId: string, userId: string) {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('workspace_members')
+    .delete()
+    .eq('workspace_id', workspaceId)
+    .eq('user_id', userId)
+
+  if (error) {
+    redirect(`/settings/family?error=${encodeURIComponent(error.message)}`)
+  }
+
+  revalidatePath('/settings/family')
+}

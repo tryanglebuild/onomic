@@ -92,6 +92,18 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
         Relationships: []
       }
+      workspace_members_with_email: {
+        Row: {
+          workspace_id: string
+          user_id: string
+          role: 'owner' | 'member'
+          joined_at: string
+          email: string
+        }
+        Insert: never
+        Update: never
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {

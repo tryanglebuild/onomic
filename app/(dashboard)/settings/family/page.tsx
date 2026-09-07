@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getUserWorkspaces } from '@/lib/workspaces/queries'
 import { CreateFamilyForm } from './create-family-form'
 import { InviteForm } from './invite-form'
+import { MemberList } from './member-list'
 
 export default async function FamilySettingsPage({
   searchParams,
@@ -20,7 +21,13 @@ export default async function FamilySettingsPage({
         .select('id, invited_email, status')
         .eq('workspace_id', w.id)
         .eq('status', 'pending')
-      return { workspace: w, invites: data ?? [] }
+
+      const { data: members } = await supabase
+        .from('workspace_members_with_email')
+        .select('user_id, role, email')
+        .eq('workspace_id', w.id)
+
+      return { workspace: w, invites: data ?? [], members: members ?? [] }
     })
   )
 
@@ -38,7 +45,7 @@ export default async function FamilySettingsPage({
           <p className="text-gray-500">Ainda não pertences a nenhuma família.</p>
         ) : (
           <div className="flex flex-col gap-4">
-            {invitesByWorkspace.map(({ workspace, invites }) => (
+            {invitesByWorkspace.map(({ workspace, invites, members }) => (
               <div key={workspace.id} className="rounded border p-4">
                 <h3 className="font-medium">{workspace.name}</h3>
                 {workspace.role === 'owner' && <InviteForm workspaceId={workspace.id} />}
@@ -49,6 +56,11 @@ export default async function FamilySettingsPage({
                     ))}
                   </ul>
                 )}
+                <MemberList
+                  workspaceId={workspace.id}
+                  members={members}
+                  canManage={workspace.role === 'owner'}
+                />
               </div>
             ))}
           </div>
