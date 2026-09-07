@@ -43,3 +43,6 @@ next-env.d.ts
 
 # subagent-driven-development scratch (ledgers, briefs, review packages)
 .superpowers/
+
+# vitest json reporter output
+.vitest/
