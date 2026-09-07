@@ -1,4 +1,4 @@
-create extension if not exists unaccent;
+create extension if not exists unaccent with schema extensions;
 
 -- ============================================================================
 -- 1. Reserved handles — lookup table, not a hardcoded list, para ser editável
@@ -109,7 +109,7 @@ $$ language plpgsql security definer set search_path = public;
 create or replace function is_handle_available(p_handle text)
 returns boolean as $$
 begin
-  if p_handle !~ '^[a-z][a-z0-9_]{2,19}$' then
+  if p_handle is null or p_handle !~ '^[a-z][a-z0-9_]{2,19}$' then
     return false;
   end if;
 
@@ -133,7 +133,7 @@ declare
   v_candidate text;
   v_attempt int := 0;
 begin
-  v_base := lower(regexp_replace(unaccent(coalesce(p_full_name, '')), '[^a-z0-9]', '', 'g'));
+  v_base := regexp_replace(lower(unaccent(coalesce(p_full_name, ''))), '[^a-z0-9]', '', 'g');
   v_base := left(v_base, 14);
 
   if v_base = '' or v_base !~ '^[a-z]' then
@@ -155,7 +155,7 @@ begin
     end if;
   end loop;
 end;
-$$ language plpgsql security definer set search_path = public;
+$$ language plpgsql security definer set search_path = public, extensions;
 
 -- anon, authenticated: suggestion must also work during signup, before the
 -- user has a session, same reasoning as is_handle_available above.
