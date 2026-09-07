@@ -4,6 +4,7 @@ import { AuthShell } from '@/components/auth/auth-shell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { safeRedirectPath } from '@/lib/navigation'
 
 export default async function LoginPage({
   searchParams,
@@ -11,6 +12,10 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; return_to?: string }>
 }) {
   const { error, return_to } = await searchParams
+  // return_to is attacker-controllable (a query param) — never let it
+  // reach the hidden field un-sanitized, or a crafted link like
+  // /login?return_to=https://evil.com becomes a working phishing redirect.
+  const safeReturnTo = safeRedirectPath(return_to)
 
   return (
     <AuthShell eyebrow="Bem-vindo de volta" title="Entrar na sua conta">
@@ -20,7 +25,7 @@ export default async function LoginPage({
         </p>
       )}
       <form action={signIn} className="flex flex-col gap-4">
-        <input type="hidden" name="return_to" value={return_to ?? '/'} />
+        <input type="hidden" name="return_to" value={safeReturnTo} />
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" placeholder="voce@email.com" required />

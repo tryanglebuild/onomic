@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { randomUUID } from 'node:crypto'
 import { generateInviteToken } from '@/lib/workspaces/invite-token'
 import { buildInviteUrl } from '@/lib/workspaces/invite-links'
-import { revalidatePath } from 'next/cache'
+import { revalidateFamilySettings, revalidateWorkspaceMembership } from '@/lib/workspaces/revalidate'
 
 export async function createFamilyWorkspace(formData: FormData) {
   const name = String(formData.get('name'))
@@ -19,6 +19,9 @@ export async function createFamilyWorkspace(formData: FormData) {
     redirect(`/settings/family?error=${encodeURIComponent(error.message)}`)
   }
 
+  // A new workspace exists now — the dashboard layout's workspace selector
+  // must show it on the very next navigation, not after its cache expires.
+  revalidateWorkspaceMembership()
   redirect(`/workspace/${workspaceId}`)
 }
 
@@ -49,7 +52,7 @@ export async function createInvite(workspaceId: string, formData: FormData) {
     redirect(`/settings/family?error=${encodeURIComponent(error.message)}`)
   }
 
-  revalidatePath('/settings/family')
+  revalidateFamilySettings()
   redirect(`/settings/family?invite_link=${encodeURIComponent(buildInviteUrl(token))}`)
 }
 
@@ -66,5 +69,7 @@ export async function removeMember(workspaceId: string, userId: string) {
     redirect(`/settings/family?error=${encodeURIComponent(error.message)}`)
   }
 
-  revalidatePath('/settings/family')
+  // Covers both self-removal (leaving a family) and an owner removing
+  // someone else — either way a membership set changed.
+  revalidateWorkspaceMembership()
 }

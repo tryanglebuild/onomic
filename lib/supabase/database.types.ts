@@ -82,11 +82,15 @@ export type Database = {
         Row: {
           id: string
           role: 'user' | 'admin' | 'support'
+          full_name: string | null
+          birth_date: string | null
           created_at: string
         }
         Insert: {
           id: string
           role?: 'user' | 'admin' | 'support'
+          full_name?: string | null
+          birth_date?: string | null
           created_at?: string
         }
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>

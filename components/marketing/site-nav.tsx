@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Logomark } from "@/components/ui/logomark";
 
+// SiteNav renders on every page (landing, auth, legal) but these section ids
+// only exist on the landing page — always anchor to "/", never a bare
+// "#id" (which resolves relative to whatever page you're currently on,
+// e.g. producing the dead link "/privacy#como-funciona").
 const LINKS = [
-  { href: "#produto", label: "Produto" },
-  { href: "#investimentos", label: "Investimentos" },
-  { href: "#como-funciona", label: "Como funciona" },
+  { href: "/#produto", label: "Produto" },
+  { href: "/#investimentos", label: "Investimentos" },
+  { href: "/#como-funciona", label: "Como funciona" },
 ];
 
 export function SiteNav() {
@@ -22,13 +26,13 @@ export function SiteNav() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-sm font-medium text-ink-soft transition-colors hover:text-ink"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/database.types'
+import { cache } from 'react'
 
 export interface WorkspaceSummary {
   id: string
@@ -8,7 +9,13 @@ export interface WorkspaceSummary {
   role: 'owner' | 'member'
 }
 
-export async function getUserWorkspaces(
+// Memoized per request. The dashboard layout and several pages each need
+// the workspace list; without this every one of them re-queries Supabase
+// even though they run in the same navigation. Keyed on the `supabase`
+// client instance — pass the one from lib/supabase/server.ts's
+// `createClient()` (itself memoized per request) so repeated calls
+// actually hit the cache instead of missing on object identity.
+export const getUserWorkspaces = cache(async function getUserWorkspaces(
   supabase: SupabaseClient<Database>
 ): Promise<WorkspaceSummary[]> {
   const { data: memberships, error } = await supabase
@@ -36,4 +43,4 @@ export async function getUserWorkspaces(
     name: w.name,
     role: roleByWorkspace.get(w.id)!,
   }))
-}
+})

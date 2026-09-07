@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { verifyInviteToken } from '@/lib/workspaces/invite-token'
 import { redirect } from 'next/navigation'
+import { revalidateWorkspaceMembership } from '@/lib/workspaces/revalidate'
 
 export async function acceptInvite(token: string) {
   const supabase = await createClient()
@@ -30,5 +31,9 @@ export async function acceptInvite(token: string) {
     redirect(`/invite/${token}?error=${encodeURIComponent(error.message)}`)
   }
 
+  // The user just joined a new workspace — without this, a browser that
+  // already had the dashboard layout cached from before accepting the
+  // invite could keep showing the old workspace list for up to 30s.
+  revalidateWorkspaceMembership()
   redirect('/')
 }
