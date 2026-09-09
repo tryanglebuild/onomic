@@ -85,7 +85,7 @@ export async function signUp(formData: FormData) {
     redirect(`/signup?error=${encodeURIComponent(error.message)}`)
   }
 
-  redirect('/')
+  redirect('/dashboard')
 }
 
 export async function signIn(formData: FormData) {
@@ -93,7 +93,7 @@ export async function signIn(formData: FormData) {
   const password = String(formData.get('password'))
   // Sanitize again here, not just on the page that renders the hidden
   // field — this action is reachable by a direct POST that skips the page.
-  const returnTo = safeRedirectPath(String(formData.get('return_to') || ''))
+  const returnTo = safeRedirectPath(String(formData.get('return_to') || ''), '/dashboard')
 
   const supabase = await createClient()
   const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -103,4 +103,10 @@ export async function signIn(formData: FormData) {
   }
 
   redirect(returnTo)
+}
+
+export async function signOut() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/login')
 }

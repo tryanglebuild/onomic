@@ -16,7 +16,7 @@ export default async function LoginPage({
   // return_to is attacker-controllable (a query param) — never let it
   // reach the hidden field un-sanitized, or a crafted link like
   // /login?return_to=https://evil.com becomes a working phishing redirect.
-  const safeReturnTo = safeRedirectPath(return_to)
+  const safeReturnTo = safeRedirectPath(return_to, '/dashboard')
 
   return (
     <AuthShell eyebrow="Bem-vindo de volta" title="Entrar na sua conta">

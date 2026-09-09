@@ -6,6 +6,8 @@ import { randomUUID } from 'node:crypto'
 import { generateInviteToken } from '@/lib/workspaces/invite-token'
 import { buildInviteUrl } from '@/lib/workspaces/invite-links'
 import { revalidateFamilySettings, revalidateWorkspaceMembership } from '@/lib/workspaces/revalidate'
+import { cookies } from 'next/headers'
+import { ACTIVE_WORKSPACE_COOKIE } from '@/lib/workspaces/active-workspace'
 
 export async function createFamilyWorkspace(formData: FormData) {
   const name = String(formData.get('name'))
@@ -22,7 +24,15 @@ export async function createFamilyWorkspace(formData: FormData) {
   // A new workspace exists now — the dashboard layout's workspace selector
   // must show it on the very next navigation, not after its cache expires.
   revalidateWorkspaceMembership()
-  redirect(`/workspace/${workspaceId}`)
+
+  const cookieStore = await cookies()
+  cookieStore.set(ACTIVE_WORKSPACE_COOKIE, workspaceId, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  })
+
+  redirect('/dashboard')
 }
 
 const INVITE_TTL_MS = 1000 * 60 * 60 * 24 * 7 // 7 days

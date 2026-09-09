@@ -6,8 +6,7 @@ import { ACTIVE_WORKSPACE_COOKIE } from '@/lib/workspaces/active-workspace'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-export async function switchWorkspace(formData: FormData) {
-  const workspaceId = String(formData.get('workspaceId'))
+export async function switchWorkspace(workspaceId: string) {
   const supabase = await createClient()
   const workspaces = await getUserWorkspaces(supabase)
 
@@ -23,5 +22,5 @@ export async function switchWorkspace(formData: FormData) {
     path: '/',
   })
 
-  redirect(`/workspace/${workspaceId}`)
+  redirect('/dashboard')
 }

@@ -22,5 +22,5 @@ export default async function RootPage() {
     redirect('/login')
   }
 
-  redirect(`/workspace/${activeWorkspaceId}`)
+  redirect('/dashboard')
 }
