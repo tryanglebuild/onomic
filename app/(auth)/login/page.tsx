@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { safeRedirectPath } from '@/lib/navigation'
+import { QueryErrorToast } from '@/components/ui/query-error-toast'
 
 export default async function LoginPage({
   searchParams,
@@ -19,11 +20,7 @@ export default async function LoginPage({
 
   return (
     <AuthShell eyebrow="Bem-vindo de volta" title="Entrar na sua conta">
-      {error && (
-        <p className="mb-4 rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger">
-          {error}
-        </p>
-      )}
+      <QueryErrorToast error={error} />
       <form action={signIn} className="flex flex-col gap-4">
         <input type="hidden" name="return_to" value={safeReturnTo} />
         <div className="flex flex-col gap-1.5">

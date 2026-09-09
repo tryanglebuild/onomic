@@ -3,6 +3,7 @@ import { getUserWorkspaces } from '@/lib/workspaces/queries'
 import { CreateFamilyForm } from './create-family-form'
 import { InviteForm } from './invite-form'
 import { MemberList } from './member-list'
+import { QueryErrorToast } from '@/components/ui/query-error-toast'
 
 export default async function FamilySettingsPage({
   searchParams,
@@ -32,6 +33,7 @@ export default async function FamilySettingsPage({
 
   return (
     <div className="flex flex-col gap-8">
+      <QueryErrorToast error={error} />
       {invite_link && (
         <p className="rounded bg-green-100 p-3">
           Link de convite gerado: <code>{invite_link}</code>
@@ -68,7 +70,6 @@ export default async function FamilySettingsPage({
 
       <section>
         <h2 className="text-lg font-semibold">Criar nova família</h2>
-        {error && <p className="text-red-600">{error}</p>}
         <CreateFamilyForm />
       </section>
     </div>

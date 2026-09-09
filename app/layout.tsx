@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
+import { AppToaster } from "@/components/ui/toast";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -40,7 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-PT"
       className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">{children}</body>
+      <body className="min-h-full flex flex-col bg-paper text-ink">
+        {children}
+        <AppToaster />
+      </body>
     </html>
   );
 }

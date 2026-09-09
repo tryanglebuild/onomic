@@ -10,8 +10,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { isValidHandleFormat, normalizeHandle } from '@/lib/handles'
 import { RefreshCw, Check, X } from 'lucide-react'
 
-type HandleStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid'
-type AsyncCheckStatus = 'checking' | 'available' | 'taken' | null
+type HandleStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid' | 'error'
+type AsyncCheckStatus = 'checking' | 'available' | 'taken' | 'error' | null
 
 export function SignupForm() {
   const [name, setName] = useState('')
@@ -63,9 +63,9 @@ export function SignupForm() {
         const available = await checkHandleAvailability(normalizedHandle)
         if (!cancelled) setAsyncStatus(available ? 'available' : 'taken')
       } catch {
-        // Silent no-op — leave status as-is; real validation happens
-        // server-side in signUp regardless.
-        if (!cancelled) setAsyncStatus(null)
+        // Distinct from 'checking' so a failed request doesn't spin
+        // forever — real validation still happens server-side in signUp.
+        if (!cancelled) setAsyncStatus('error')
       }
     }, 350)
     return () => {
@@ -133,7 +133,9 @@ export function SignupForm() {
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
               {status === 'checking' && <RefreshCw className="size-4 animate-spin text-muted" />}
               {status === 'available' && <Check className="size-4 text-primary-strong" />}
-              {(status === 'taken' || status === 'invalid') && <X className="size-4 text-danger" />}
+              {(status === 'taken' || status === 'invalid' || status === 'error') && (
+                <X className="size-4 text-danger" />
+              )}
             </span>
           </div>
           <Button
@@ -149,6 +151,9 @@ export function SignupForm() {
         {status === 'taken' && <p className="text-xs text-danger">Este handle já está a ser usado.</p>}
         {status === 'invalid' && (
           <p className="text-xs text-danger">3–20 caracteres, letras minúsculas, números e &quot;_&quot;.</p>
+        )}
+        {status === 'error' && (
+          <p className="text-xs text-danger">Não foi possível verificar o handle. Tente novamente.</p>
         )}
       </div>
 

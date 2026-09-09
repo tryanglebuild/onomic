@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { AVATAR_BUCKET } from '@/lib/storage/avatar'
 import { AvatarUploadForm } from '@/components/settings/avatar-upload-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { QueryErrorToast } from '@/components/ui/query-error-toast'
 
 export default async function ProfileSettingsPage({
   searchParams,
@@ -37,11 +38,7 @@ export default async function ProfileSettingsPage({
         <CardTitle>O seu perfil</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        {error && (
-          <p className="rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger">
-            {error}
-          </p>
-        )}
+        <QueryErrorToast error={error} />
         <AvatarUploadForm currentUrl={avatarUrl} />
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
           <dt className="text-muted">Nome</dt>

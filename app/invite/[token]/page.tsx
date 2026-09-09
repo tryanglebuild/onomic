@@ -5,6 +5,7 @@ import { verifyInviteToken } from '@/lib/workspaces/invite-token'
 import { acceptInvite } from './actions'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { QueryErrorToast } from '@/components/ui/query-error-toast'
 
 function InviteScreen({ children }: { children: React.ReactNode }) {
   return (
@@ -72,11 +73,7 @@ export default async function InvitePage({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {error && (
-          <p className="mb-4 rounded-md border border-danger/30 bg-danger/10 px-3.5 py-2.5 text-sm text-danger">
-            Não foi possível aceitar o convite: {error}
-          </p>
-        )}
+        <QueryErrorToast error={error} prefix="Não foi possível aceitar o convite: " />
         <form action={boundAccept}>
           <Button type="submit" className="w-full">
             Aceitar convite
