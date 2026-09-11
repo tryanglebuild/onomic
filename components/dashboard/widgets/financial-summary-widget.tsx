@@ -1,4 +1,3 @@
-import { Wallet } from 'lucide-react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/finance/cadence'
@@ -15,8 +14,8 @@ export function FinancialSummaryWidget({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-          <Wallet className="size-4" aria-hidden />
+        <span className="flex size-6 shrink-0 items-center justify-center font-display text-xl leading-none text-primary-strong" aria-hidden>
+          €
         </span>
         <CardTitle>Resumo financeiro</CardTitle>
       </CardHeader>
@@ -36,7 +35,7 @@ export function FinancialSummaryWidget({
           </span>
         </div>
         {monthlyIncome === 0 && monthlyExpenses === 0 && (
-          <p className="text-xs text-muted">
+          <p className="border-t border-dashed border-border pt-3 text-xs text-muted">
             Ainda não configurou rendimento nem gastos fixos —{' '}
             <Link href="/budget" className="font-medium text-primary-strong underline-offset-4 hover:underline">
               comece agora

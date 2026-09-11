@@ -37,6 +37,12 @@
   --color-violet: #7c6ae8;
   --color-violet-soft: #ece9fb;
 
+  /* Moss green — the "needs attention" register: prompts for an action worth
+     doing, without the alarm of the danger/warning signals below */
+  --color-moss: #123010;
+  --color-moss-strong: #0a1f09;
+  --color-moss-soft: #dde6dc;
+
   /* Signals */
   --color-warning: #b45309;
   --color-danger: #c0362c;
@@ -74,6 +80,10 @@
 
   --color-violet: var(--color-violet);
   --color-violet-soft: var(--color-violet-soft);
+
+  --color-moss: var(--color-moss);
+  --color-moss-strong: var(--color-moss-strong);
+  --color-moss-soft: var(--color-moss-soft);
 
   --color-warning: var(--color-warning);
   --color-danger: var(--color-danger);

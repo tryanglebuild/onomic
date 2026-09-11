@@ -1,4 +1,4 @@
-import { CheckCircle2, ListTodo } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { PendingAction } from '@/lib/dashboard/overview'
 
@@ -6,9 +6,14 @@ export function PendingActionsWidget({ actions }: { actions: PendingAction[] }) 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-warning/15 text-warning">
-          <ListTodo className="size-4" aria-hidden />
-        </span>
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" className="shrink-0" aria-hidden>
+          <path d="M3 5.5l2 2 4-4" stroke="var(--color-warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M11 5.5h8" stroke="var(--color-warning)" strokeOpacity="0.35" strokeWidth="2" strokeLinecap="round" />
+          <path d="M3 11.5l2 2 4-4" stroke="var(--color-warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M11 11.5h8" stroke="var(--color-warning)" strokeOpacity="0.35" strokeWidth="2" strokeLinecap="round" />
+          <path d="M3 17.5l2 2 4-4" stroke="var(--color-warning)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M11 17.5h5" stroke="var(--color-warning)" strokeOpacity="0.35" strokeWidth="2" strokeLinecap="round" />
+        </svg>
         <CardTitle>Ações pendentes</CardTitle>
       </CardHeader>
       <CardContent>
