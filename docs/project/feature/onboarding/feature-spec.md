@@ -49,9 +49,9 @@ No onboarding-related column or table exists anywhere in the current schema.
 6. Clicking "Concluir" sets completed_at = now(), redirects to /dashboard
 7. From here on:
    - If completed_at is set: nothing else happens, the flow is done
-   - If skipped_at is set but completed_at is not: the navbar shows a
-     "Completar perfil" badge/button linking back to /onboarding, which
-     resumes at current_step
+   - If completed_at is not set (whether or not the user ever explicitly
+     clicked "Completar mais tarde"): the navbar shows a "Completar perfil"
+     badge/button linking back to /onboarding, which resumes at current_step
    - Visiting /onboarding directly when completed_at is already set
      redirects straight to /dashboard (nothing to do)
 ```
@@ -61,7 +61,8 @@ No onboarding-related column or table exists anywhere in the current schema.
 | Question | Decision |
 |---|---|
 | Quando é forçado o redirect para `/onboarding`? | Só uma vez, na sessão imediatamente a seguir ao signup. Nunca mais é forçado depois disso — nem no `signIn`, nem no guard do dashboard. |
-| O que acontece depois de "Completar mais tarde"? | Fica um indicador discreto (badge/botão) na navbar a apontar para `/onboarding`, visível até `completed_at` ser preenchido. |
+| Quando aparece o indicador na navbar? | Sempre que `completed_at` estiver vazio — não depende de o user ter clicado explicitamente em "Completar mais tarde". Cobre também quem simplesmente fecha o separador sem clicar em nada. |
+| O passo 5 (resumo) tem "Completar mais tarde"? | Não, deliberadamente. Os passos 1–4 podem ser saltados; o passo 5 só permite corrigir uma resposta anterior (Voltar) ou concluir — não sair sem decidir. |
 | Algum passo é obrigatório? | Não. Todos têm uma opção neutra válida ("ainda não sei" / meta em branco) — nada bloqueia o avanço. |
 | Onde vivem os dados? | Tabela dedicada `onboarding_profiles`, colunas tipadas com `CHECK`, não um `jsonb` solto — consistente com o resto do schema (que só usa `jsonb` para dados genuinamente opacos, como `transactions.metadata`). |
 | O flow vive dentro da shell do dashboard (sidebar/navbar)? | Não — rota própria fora de `(dashboard)`, chrome mínimo (logótipo + stepper), como `/login`/`/signup`. |
@@ -108,7 +109,7 @@ One row per user, 1:1 with `auth.users`, created by the same trigger that create
 | Location | What appears |
 |---|---|
 | Right after signup (first time only) | Full-screen redirect to `/onboarding` |
-| Dashboard navbar (`components/dashboard/navbar.tsx`) | A quiet `Badge`-style button, "Completar perfil", shown only while `skipped_at` is set and `completed_at` is not — links to `/onboarding`, resumes at `current_step` |
+| Dashboard navbar (`components/dashboard/navbar.tsx`) | A quiet `Badge`-style button, "Completar perfil", shown whenever `completed_at` is not set (regardless of whether the user ever clicked "Completar mais tarde") — links to `/onboarding`, resumes at `current_step` |
 | Direct navigation to `/onboarding` after completion | Immediate redirect to `/dashboard` — nothing to show |
 
 ## 10. Relationship to Existing Features

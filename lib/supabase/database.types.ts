@@ -100,6 +100,36 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>
         Relationships: []
       }
+      onboarding_profiles: {
+        Row: {
+          id: string
+          primary_goals: ('budgeting' | 'saving' | 'investing' | 'family')[]
+          risk_profile: 'conservative' | 'moderate' | 'aggressive' | null
+          investment_target_amount: number | null
+          investment_target_frequency: 'monthly' | 'quarterly' | null
+          asset_preferences: ('crypto' | 'stocks' | 'etfs' | 'undecided')[]
+          current_step: number
+          completed_at: string | null
+          skipped_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          primary_goals?: ('budgeting' | 'saving' | 'investing' | 'family')[]
+          risk_profile?: 'conservative' | 'moderate' | 'aggressive' | null
+          investment_target_amount?: number | null
+          investment_target_frequency?: 'monthly' | 'quarterly' | null
+          asset_preferences?: ('crypto' | 'stocks' | 'etfs' | 'undecided')[]
+          current_step?: number
+          completed_at?: string | null
+          skipped_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['onboarding_profiles']['Insert']>
+        Relationships: []
+      }
       reserved_handles: {
         Row: { handle: string }
         Insert: { handle: string }

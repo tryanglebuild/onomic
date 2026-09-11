@@ -14,12 +14,14 @@ export function DashboardShell({
   activeWorkspaceId,
   profile,
   initialCollapsed,
+  showOnboardingReminder,
 }: {
   children: React.ReactNode
   workspaces: WorkspaceSummary[]
   activeWorkspaceId: string
   profile: Profile
   initialCollapsed: boolean
+  showOnboardingReminder: boolean
 }) {
   const [collapsed, setCollapsed] = useState(initialCollapsed)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -48,6 +50,7 @@ export function DashboardShell({
           workspaces={workspaces}
           activeWorkspaceId={activeWorkspaceId}
           profile={profile}
+          showOnboardingReminder={showOnboardingReminder}
           onOpenMobileSidebar={() => setMobileOpen(true)}
         />
         <main className="flex-1 p-6 lg:p-8">{children}</main>

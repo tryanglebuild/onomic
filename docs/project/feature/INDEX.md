@@ -15,7 +15,7 @@ For instructions on how to create a new feature folder and what each document sh
 
 | Feature | Status | Description | Created | Last Updated |
 |---|---|---|---|---|
-| [Onboarding](#onboarding) | 🟠 Draft | Skippable, resumable 5-step onboarding after signup — objective, risk profile, investment target, asset preference | 2026-09-10 | 2026-09-10 |
+| [Onboarding](#onboarding) | 🟡 Planned | Skippable, resumable 5-step onboarding after signup — objective, risk profile, investment target, asset preference | 2026-09-10 | 2026-09-10 |
 | [Family Workspaces](#family-workspaces) | 🔵 In Progress | Multi-tenant foundation — personal + shared family spaces with isolated data (RLS) + platform RBAC foundation | 2026-09-06 | 2026-09-07 |
 | [User Identity: Handle & Avatar](#user-identity-handle--avatar) | 🟠 Draft | Unique `@handle` chosen at signup + self-service avatar upload, extending `profiles` | 2026-09-07 | 2026-09-07 |
 | [Manual Transactions](#manual-transactions) | 🟠 Draft | Record categorized expenses/income within a workspace | 2026-09-06 | 2026-09-06 |
@@ -59,7 +59,7 @@ _Features mentioned during planning but not yet documented with a spec of their 
 ### Onboarding
 
 **Folder:** [`onboarding/`](./onboarding/)
-**Status:** 🟠 Draft — spec approved, implementation plan not yet written
+**Status:** 🟡 Planned — spec and implementation plan both complete, implementation not yet started
 **Created:** 2026-09-10 00:00
 **Last updated:** 2026-09-10 00:00
 
@@ -83,13 +83,18 @@ Every future AI/recommendation feature (Investment Tracking, AI Financial Adviso
 | Document | Purpose | Status |
 |---|---|---|
 | [feature-spec.md](./onboarding/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
-| implementation-plan.md | N-phase technical plan with SQL, Server Actions, and UI | Not created yet |
+| [implementation-plan.md](./onboarding/implementation-plan.md) | 6-phase technical plan with SQL, Server Actions, and UI | Planned — not yet implemented |
 
 #### Phase Tracker
 
 | Phase | Description | Status |
 |---|---|---|
-| — | Implementation plan not yet written | ⬜ Not started |
+| 1 | Database: `onboarding_profiles`, RLS, trigger extension | ⬜ Not started |
+| 2 | Hand-authored types | ⬜ Not started |
+| 3 | Step data, query helper, Server Actions | ⬜ Not started |
+| 4 | `/onboarding` route, shell, stepper, 5 step components | ⬜ Not started |
+| 5 | `signUp` redirect change | ⬜ Not started |
+| 6 | Navbar reminder | ⬜ Not started |
 
 ---
 

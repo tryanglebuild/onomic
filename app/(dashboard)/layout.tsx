@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { getUserWorkspaces } from '@/lib/workspaces/queries'
 import { getActiveWorkspaceId } from '@/lib/workspaces/active-workspace'
+import { getOnboardingProfile } from '@/lib/onboarding/queries'
 import { AVATAR_BUCKET } from '@/lib/storage/avatar'
 import { SIDEBAR_COLLAPSED_COOKIE, parseSidebarCollapsed } from '@/lib/dashboard/sidebar-preference'
 import { DashboardShell } from '@/components/dashboard/dashboard-shell'
@@ -30,6 +31,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .eq('id', user.id)
     .single()
 
+  const onboardingProfile = await getOnboardingProfile(supabase, user.id)
+  // Shows whenever onboarding isn't finished, not just after an explicit
+  // skip — a user who just closes the tab without clicking anything must
+  // still have a way back in (confirmed product decision, see
+  // docs/project/feature/onboarding/feature-spec.md).
+  const showOnboardingReminder = Boolean(onboardingProfile && !onboardingProfile.completed_at)
+
   // Deliberate cache-busting: this is a Server Component render (not a
   // client render the React Compiler needs to memoize), and a changing
   // value here is exactly the point — without it the browser/CDN would
@@ -54,6 +62,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         avatarUrl,
       }}
       initialCollapsed={initialCollapsed}
+      showOnboardingReminder={showOnboardingReminder}
     >
       {children}
     </DashboardShell>

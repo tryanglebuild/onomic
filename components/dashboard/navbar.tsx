@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { Bell, Menu } from 'lucide-react'
 import type { WorkspaceSummary } from '@/lib/workspaces/queries'
 import { getPageTitle } from '@/lib/dashboard/nav-config'
+import { OnboardingReminder } from './onboarding-reminder'
 import { WorkspaceMenu } from './workspace-menu'
 import { UserMenu } from './user-menu'
 
@@ -13,11 +14,13 @@ export function Navbar({
   workspaces,
   activeWorkspaceId,
   profile,
+  showOnboardingReminder,
   onOpenMobileSidebar,
 }: {
   workspaces: WorkspaceSummary[]
   activeWorkspaceId: string
   profile: Profile
+  showOnboardingReminder: boolean
   onOpenMobileSidebar: () => void
 }) {
   const pathname = usePathname()
@@ -37,6 +40,7 @@ export function Navbar({
       <h1 className="font-display text-lg font-medium tracking-tight">{title}</h1>
 
       <div className="ml-auto flex items-center gap-3">
+        {showOnboardingReminder && <OnboardingReminder />}
         <WorkspaceMenu workspaces={workspaces} activeWorkspaceId={activeWorkspaceId} />
         <button
           type="button"
