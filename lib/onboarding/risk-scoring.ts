@@ -1,8 +1,12 @@
 import type { InvestmentHorizon, InvestmentExperience, LossReaction, RiskProfile } from './steps'
 
-const HORIZON_POINTS: Record<InvestmentHorizon, number> = { short: 0, medium: 1, long: 2 }
-const EXPERIENCE_POINTS: Record<InvestmentExperience, number> = { none: 0, some: 1, experienced: 2 }
-const LOSS_REACTION_POINTS: Record<LossReaction, number> = { sell_all: 0, sell_some: 1, hold: 2, buy_more: 3 }
+export const HORIZON_POINTS: Record<InvestmentHorizon, number> = { short: 0, medium: 1, long: 2 }
+export const EXPERIENCE_POINTS: Record<InvestmentExperience, number> = { none: 0, some: 1, experienced: 2 }
+export const LOSS_REACTION_POINTS: Record<LossReaction, number> = { sell_all: 0, sell_some: 1, hold: 2, buy_more: 3 }
+
+export const HORIZON_MAX = 2
+export const EXPERIENCE_MAX = 2
+export const LOSS_REACTION_MAX = 3
 
 /**
  * Deterministic risk-profile scoring — never asked directly, always derived
