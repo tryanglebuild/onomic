@@ -7,18 +7,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { OptionButton } from '../option-button'
 import { INVESTMENT_FREQUENCY_OPTIONS, type InvestmentFrequency } from '@/lib/onboarding/steps'
-import { saveInvestmentTargetStep, skipOnboarding } from '@/app/onboarding/actions'
+import { saveInvestmentTargetStep } from '@/app/onboarding/actions'
 
 export function InvestmentTargetStep({
   initialAmount,
   initialFrequency,
   onAdvance,
   onBack,
+  onSkip,
 }: {
   initialAmount: number | null
   initialFrequency: InvestmentFrequency | null
   onAdvance: () => void
   onBack: () => void
+  onSkip: () => void
 }) {
   const [amount, setAmount] = useState(initialAmount !== null ? String(initialAmount) : '')
   const [frequency, setFrequency] = useState<InvestmentFrequency | null>(initialFrequency)
@@ -50,7 +52,11 @@ export function InvestmentTargetStep({
           step="0.01"
           placeholder="Ex.: 300"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => {
+            const next = e.target.value
+            setAmount(next)
+            if (next.trim() === '' || Number(next) <= 0) setFrequency(null)
+          }}
         />
       </div>
 
@@ -73,11 +79,7 @@ export function InvestmentTargetStep({
           Voltar
         </button>
         <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => startTransition(() => skipOnboarding())}
-            className="text-sm text-muted hover:text-ink"
-          >
+          <button type="button" onClick={onSkip} className="text-sm text-muted hover:text-ink">
             Completar mais tarde
           </button>
           <Button

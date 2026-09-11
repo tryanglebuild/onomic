@@ -1,7 +1,20 @@
 import type { LucideIcon } from 'lucide-react'
-import { Compass, ShieldCheck, TrendingUp, Layers, CheckCircle2 } from 'lucide-react'
+import {
+  Compass,
+  Hourglass,
+  GraduationCap,
+  TrendingDown,
+  Target,
+  TrendingUp,
+  Layers,
+  CheckCircle2,
+} from 'lucide-react'
 
 export type PrimaryGoal = 'budgeting' | 'saving' | 'investing' | 'family'
+export type InvestmentHorizon = 'short' | 'medium' | 'long'
+export type InvestmentExperience = 'none' | 'some' | 'experienced'
+export type LossReaction = 'sell_all' | 'sell_some' | 'hold' | 'buy_more'
+export type InvestmentPurpose = 'retirement' | 'home' | 'grow_wealth' | 'passive_income' | 'other'
 export type RiskProfile = 'conservative' | 'moderate' | 'aggressive'
 export type InvestmentFrequency = 'monthly' | 'quarterly'
 export type AssetPreference = 'crypto' | 'stocks' | 'etfs' | 'undecided'
@@ -13,10 +26,37 @@ export const PRIMARY_GOAL_OPTIONS: { value: PrimaryGoal; label: string }[] = [
   { value: 'family', label: 'Gerir finanças em família' },
 ]
 
+export const INVESTMENT_HORIZON_OPTIONS: { value: InvestmentHorizon; label: string; description: string }[] = [
+  { value: 'short', label: 'Curto prazo', description: 'Menos de 2 anos.' },
+  { value: 'medium', label: 'Médio prazo', description: 'Entre 2 e 5 anos.' },
+  { value: 'long', label: 'Longo prazo', description: 'Mais de 5 anos.' },
+]
+
+export const INVESTMENT_EXPERIENCE_OPTIONS: { value: InvestmentExperience; label: string }[] = [
+  { value: 'none', label: 'Nenhuma — nunca investi' },
+  { value: 'some', label: 'Alguma — já experimentei' },
+  { value: 'experienced', label: 'Tenho experiência' },
+]
+
+export const LOSS_REACTION_OPTIONS: { value: LossReaction; label: string }[] = [
+  { value: 'sell_all', label: 'Vendia tudo imediatamente' },
+  { value: 'sell_some', label: 'Vendia uma parte, por precaução' },
+  { value: 'hold', label: 'Mantinha e esperava recuperar' },
+  { value: 'buy_more', label: 'Aproveitava para comprar mais' },
+]
+
+export const INVESTMENT_PURPOSE_OPTIONS: { value: InvestmentPurpose; label: string }[] = [
+  { value: 'retirement', label: 'Reforma' },
+  { value: 'home', label: 'Comprar casa' },
+  { value: 'grow_wealth', label: 'Crescer o património' },
+  { value: 'passive_income', label: 'Gerar rendimento passivo' },
+  { value: 'other', label: 'Outro' },
+]
+
 export const RISK_PROFILE_OPTIONS: { value: RiskProfile; label: string; description: string }[] = [
-  { value: 'conservative', label: 'Conservador', description: 'Prefiro segurança, mesmo com retornos mais baixos.' },
-  { value: 'moderate', label: 'Moderado', description: 'Aceito algum risco por um retorno melhor.' },
-  { value: 'aggressive', label: 'Arrojado', description: 'Procuro o maior retorno possível, aceito mais volatilidade.' },
+  { value: 'conservative', label: 'Conservador', description: 'Preferes segurança, mesmo com retornos mais baixos.' },
+  { value: 'moderate', label: 'Moderado', description: 'Aceitas algum risco por um retorno melhor.' },
+  { value: 'aggressive', label: 'Arrojado', description: 'Procuras o maior retorno possível, aceitas mais volatilidade.' },
 ]
 
 export const INVESTMENT_FREQUENCY_OPTIONS: { value: InvestmentFrequency; label: string }[] = [
@@ -33,10 +73,13 @@ export const ASSET_PREFERENCE_OPTIONS: { value: AssetPreference; label: string }
 
 export const ONBOARDING_STEPS: { step: number; title: string; icon: LucideIcon }[] = [
   { step: 1, title: 'Objetivo', icon: Compass },
-  { step: 2, title: 'Perfil de risco', icon: ShieldCheck },
-  { step: 3, title: 'Meta de investimento', icon: TrendingUp },
-  { step: 4, title: 'Preferência de ativos', icon: Layers },
-  { step: 5, title: 'Resumo', icon: CheckCircle2 },
+  { step: 2, title: 'Horizonte temporal', icon: Hourglass },
+  { step: 3, title: 'Experiência', icon: GraduationCap },
+  { step: 4, title: 'Reação a uma queda', icon: TrendingDown },
+  { step: 5, title: 'Propósito', icon: Target },
+  { step: 6, title: 'Meta de investimento', icon: TrendingUp },
+  { step: 7, title: 'Preferência de ativos', icon: Layers },
+  { step: 8, title: 'Resumo', icon: CheckCircle2 },
 ]
 
 export const TOTAL_ONBOARDING_STEPS = ONBOARDING_STEPS.length

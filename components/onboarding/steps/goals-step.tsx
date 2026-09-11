@@ -5,14 +5,16 @@ import { Compass } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { OptionButton } from '../option-button'
 import { PRIMARY_GOAL_OPTIONS, type PrimaryGoal } from '@/lib/onboarding/steps'
-import { saveGoalsStep, skipOnboarding } from '@/app/onboarding/actions'
+import { saveGoalsStep } from '@/app/onboarding/actions'
 
 export function GoalsStep({
   initialGoals,
   onAdvance,
+  onSkip,
 }: {
   initialGoals: PrimaryGoal[]
   onAdvance: () => void
+  onSkip: () => void
 }) {
   const [selected, setSelected] = useState<PrimaryGoal[]>(initialGoals)
   const [isPending, startTransition] = useTransition()
@@ -45,11 +47,7 @@ export function GoalsStep({
       </div>
 
       <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => startTransition(() => skipOnboarding())}
-          className="text-sm text-muted hover:text-ink"
-        >
+        <button type="button" onClick={onSkip} className="text-sm text-muted hover:text-ink">
           Completar mais tarde
         </button>
         <Button

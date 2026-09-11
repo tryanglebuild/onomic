@@ -104,26 +104,32 @@ export type Database = {
         Row: {
           id: string
           primary_goals: ('budgeting' | 'saving' | 'investing' | 'family')[]
+          investment_horizon: 'short' | 'medium' | 'long' | null
+          investment_experience: 'none' | 'some' | 'experienced' | null
+          loss_reaction: 'sell_all' | 'sell_some' | 'hold' | 'buy_more' | null
+          investment_purpose: ('retirement' | 'home' | 'grow_wealth' | 'passive_income' | 'other')[]
           risk_profile: 'conservative' | 'moderate' | 'aggressive' | null
           investment_target_amount: number | null
           investment_target_frequency: 'monthly' | 'quarterly' | null
           asset_preferences: ('crypto' | 'stocks' | 'etfs' | 'undecided')[]
           current_step: number
           completed_at: string | null
-          skipped_at: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id: string
           primary_goals?: ('budgeting' | 'saving' | 'investing' | 'family')[]
+          investment_horizon?: 'short' | 'medium' | 'long' | null
+          investment_experience?: 'none' | 'some' | 'experienced' | null
+          loss_reaction?: 'sell_all' | 'sell_some' | 'hold' | 'buy_more' | null
+          investment_purpose?: ('retirement' | 'home' | 'grow_wealth' | 'passive_income' | 'other')[]
           risk_profile?: 'conservative' | 'moderate' | 'aggressive' | null
           investment_target_amount?: number | null
           investment_target_frequency?: 'monthly' | 'quarterly' | null
           asset_preferences?: ('crypto' | 'stocks' | 'etfs' | 'undecided')[]
           current_step?: number
           completed_at?: string | null
-          skipped_at?: string | null
           created_at?: string
           updated_at?: string
         }

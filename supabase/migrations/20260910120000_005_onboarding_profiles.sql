@@ -8,17 +8,28 @@
 create table onboarding_profiles (
   id                          uuid primary key references auth.users(id) on delete cascade,
   primary_goals               text[] not null default '{}',
+  investment_horizon          text,
+  investment_experience       text,
+  loss_reaction                text,
+  investment_purpose          text[] not null default '{}',
   risk_profile                text,
   investment_target_amount    numeric(12,2),
   investment_target_frequency text,
   asset_preferences           text[] not null default '{}',
   current_step                smallint not null default 1,
   completed_at                timestamptz,
-  skipped_at                  timestamptz,
   created_at                  timestamptz not null default now(),
   updated_at                  timestamptz not null default now(),
   constraint onboarding_profiles_current_step_range
-    check (current_step between 1 and 5),
+    check (current_step between 1 and 8),
+  constraint onboarding_profiles_horizon_valid
+    check (investment_horizon is null or investment_horizon in ('short', 'medium', 'long')),
+  constraint onboarding_profiles_experience_valid
+    check (investment_experience is null or investment_experience in ('none', 'some', 'experienced')),
+  constraint onboarding_profiles_loss_reaction_valid
+    check (loss_reaction is null or loss_reaction in ('sell_all', 'sell_some', 'hold', 'buy_more')),
+  constraint onboarding_profiles_purpose_valid
+    check (investment_purpose <@ array['retirement', 'home', 'grow_wealth', 'passive_income', 'other']::text[]),
   constraint onboarding_profiles_risk_profile_valid
     check (risk_profile is null or risk_profile in ('conservative', 'moderate', 'aggressive')),
   constraint onboarding_profiles_frequency_valid

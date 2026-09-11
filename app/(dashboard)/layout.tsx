@@ -63,6 +63,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       }}
       initialCollapsed={initialCollapsed}
       showOnboardingReminder={showOnboardingReminder}
+      onboardingProfile={onboardingProfile}
     >
       {children}
     </DashboardShell>

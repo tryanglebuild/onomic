@@ -1,7 +1,7 @@
 # Feature Index — Onomic
 
 **Created:** 2026-09-06 00:00
-**Last updated:** 2026-09-10 00:00
+**Last updated:** 2026-09-11 00:00
 
 This is a living document. It tracks every feature that has been conceived, planned, or shipped in the Onomic project. Update this file whenever a feature is created, progresses to a new status, or is completed.
 
@@ -15,7 +15,7 @@ For instructions on how to create a new feature folder and what each document sh
 
 | Feature | Status | Description | Created | Last Updated |
 |---|---|---|---|---|
-| [Onboarding](#onboarding) | 🟡 Planned | Skippable, resumable 5-step onboarding after signup — objective, risk profile, investment target, asset preference | 2026-09-10 | 2026-09-10 |
+| [Onboarding](#onboarding) | 🟡 Planned | Resumable 8-step onboarding modal over /dashboard — objective, computed risk profile via behavioral questions, investment target, asset preference | 2026-09-10 | 2026-09-11 |
 | [Family Workspaces](#family-workspaces) | 🔵 In Progress | Multi-tenant foundation — personal + shared family spaces with isolated data (RLS) + platform RBAC foundation | 2026-09-06 | 2026-09-07 |
 | [User Identity: Handle & Avatar](#user-identity-handle--avatar) | 🟠 Draft | Unique `@handle` chosen at signup + self-service avatar upload, extending `profiles` | 2026-09-07 | 2026-09-07 |
 | [Manual Transactions](#manual-transactions) | 🟠 Draft | Record categorized expenses/income within a workspace | 2026-09-06 | 2026-09-06 |
@@ -59,42 +59,44 @@ _Features mentioned during planning but not yet documented with a spec of their 
 ### Onboarding
 
 **Folder:** [`onboarding/`](./onboarding/)
-**Status:** 🟡 Planned — spec and implementation plan both complete, implementation not yet started
+**Status:** 🟡 Planned (v2 — modal + expanded investor profile) — spec and implementation plan both complete, implementation not yet started. v1 (5-step page) is committed but superseded by this revision before ever being applied to a database.
 **Created:** 2026-09-10 00:00
-**Last updated:** 2026-09-10 00:00
+**Last updated:** 2026-09-11 00:00
 
 #### What It Enables
 
-A skippable, resumable 5-step flow right after signup that captures what a user is actually here for — finance-management objective, investment risk profile, investment target, asset preference — without blocking access to the dashboard.
+An 8-step modal shown over `/dashboard` right after signup — objective, investment horizon, experience, a behavioral loss-reaction question, purpose, investment target, and asset preference — with `risk_profile` calculated from the behavioral answers rather than self-declared. Resumable via a navbar badge, cannot be dismissed except through its own buttons, never blocks the dashboard underneath.
 
 #### Why It Matters
 
-Every future AI/recommendation feature (Investment Tracking, AI Financial Advisor Layer) needs these signals and there is currently nowhere they're captured. This front-runs part of the Investment Profile Onboarding backlog item.
+Every future AI/recommendation feature (Investment Tracking, AI Financial Advisor Layer) needs these signals and there is currently nowhere they're captured. This delivers the Investment Profile Onboarding backlog item with a real suitability questionnaire instead of a single self-declared label.
 
 #### Scope
 
-- New `onboarding_profiles` table (1:1 with `auth.users`, typed columns + `CHECK` constraints, no `jsonb`)
-- Forced redirect to `/onboarding` only once, immediately after signup — never on subsequent logins
-- Quiet "Completar perfil" indicator in the dashboard navbar once skipped, until completed
-- Excludes: editing answers after completion, any feature reading this data yet, mid-step autosave, gamification
+- `onboarding_profiles` table (1:1 with `auth.users`, typed columns + `CHECK` constraints, no `jsonb`) — migration edited in place, never applied to any database
+- Modal (`@radix-ui/react-dialog`) over `/dashboard`, auto-opened once via `?onboarding=1` on the post-signup redirect
+- `risk_profile` computed server-side from horizon + experience + loss-reaction, never chosen directly
+- Quiet "Completar perfil" indicator in the dashboard navbar whenever `completed_at` is unset — opens the same modal
+- Excludes: editing answers after completion, any feature reading this data yet, mid-step autosave, gamification, explaining the scoring formula to the user
 
 #### Documents
 
 | Document | Purpose | Status |
 |---|---|---|
-| [feature-spec.md](./onboarding/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
-| [implementation-plan.md](./onboarding/implementation-plan.md) | 6-phase technical plan with SQL, Server Actions, and UI | Planned — not yet implemented |
+| [feature-spec.md](./onboarding/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved (v2) |
+| [implementation-plan.md](./onboarding/implementation-plan.md) | 7-phase technical plan with SQL, Server Actions, and UI | Planned — not yet implemented |
 
 #### Phase Tracker
 
 | Phase | Description | Status |
 |---|---|---|
-| 1 | Database: `onboarding_profiles`, RLS, trigger extension | ⬜ Not started |
+| 1 | Migration edit: 4 new columns, drop `skipped_at`, `current_step` range 1–8 | ⬜ Not started |
 | 2 | Hand-authored types | ⬜ Not started |
-| 3 | Step data, query helper, Server Actions | ⬜ Not started |
-| 4 | `/onboarding` route, shell, stepper, 5 step components | ⬜ Not started |
-| 5 | `signUp` redirect change | ⬜ Not started |
-| 6 | Navbar reminder | ⬜ Not started |
+| 3 | Risk scoring (tested) + step data + Server Actions | ⬜ Not started |
+| 4 | 8 step components (4 new, 3 edited, 1 deleted) | ⬜ Not started |
+| 5 | Radix Dialog modal, flow controller, auto-open detector, route stub | ⬜ Not started |
+| 6 | Dashboard shell/navbar/reminder integration | ⬜ Not started |
+| 7 | Signup redirect | ⬜ Not started |
 
 ---
 

@@ -15,12 +15,14 @@ export function Navbar({
   activeWorkspaceId,
   profile,
   showOnboardingReminder,
+  onOpenOnboarding,
   onOpenMobileSidebar,
 }: {
   workspaces: WorkspaceSummary[]
   activeWorkspaceId: string
   profile: Profile
   showOnboardingReminder: boolean
+  onOpenOnboarding: () => void
   onOpenMobileSidebar: () => void
 }) {
   const pathname = usePathname()
@@ -40,7 +42,7 @@ export function Navbar({
       <h1 className="font-display text-lg font-medium tracking-tight">{title}</h1>
 
       <div className="ml-auto flex items-center gap-3">
-        {showOnboardingReminder && <OnboardingReminder />}
+        {showOnboardingReminder && <OnboardingReminder onClick={onOpenOnboarding} />}
         <WorkspaceMenu workspaces={workspaces} activeWorkspaceId={activeWorkspaceId} />
         <button
           type="button"
