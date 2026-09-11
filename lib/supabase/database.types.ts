@@ -142,6 +142,74 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['reserved_handles']['Insert']>
         Relationships: []
       }
+      income_source_types: {
+        Row: { id: string; slug: string; label: string; sort_order: number }
+        Insert: { id?: string; slug: string; label: string; sort_order: number }
+        Update: Partial<Database['public']['Tables']['income_source_types']['Insert']>
+        Relationships: []
+      }
+      expense_categories: {
+        Row: { id: string; slug: string; label: string; sort_order: number }
+        Insert: { id?: string; slug: string; label: string; sort_order: number }
+        Update: Partial<Database['public']['Tables']['expense_categories']['Insert']>
+        Relationships: []
+      }
+      income_sources: {
+        Row: {
+          id: string
+          workspace_id: string
+          source_type_id: string
+          name: string
+          amount: number
+          cadence: 'diaria' | 'semanal' | 'mensal' | 'trimestral' | 'semestral' | 'anual'
+          notes: string | null
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          source_type_id: string
+          name: string
+          amount: number
+          cadence: 'diaria' | 'semanal' | 'mensal' | 'trimestral' | 'semestral' | 'anual'
+          notes?: string | null
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['income_sources']['Insert']>
+        Relationships: []
+      }
+      recurring_expenses: {
+        Row: {
+          id: string
+          workspace_id: string
+          category_id: string
+          name: string
+          amount: number
+          cadence: 'diaria' | 'semanal' | 'mensal' | 'trimestral' | 'semestral' | 'anual'
+          notes: string | null
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          workspace_id: string
+          category_id: string
+          name: string
+          amount: number
+          cadence: 'diaria' | 'semanal' | 'mensal' | 'trimestral' | 'semestral' | 'anual'
+          notes?: string | null
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['recurring_expenses']['Insert']>
+        Relationships: []
+      }
     }
     Views: Record<string, never>
     Functions: {
