@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Hourglass } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { OptionButton } from '../option-button'
 import { INVESTMENT_HORIZON_OPTIONS, type InvestmentHorizon } from '@/lib/onboarding/steps'
@@ -26,20 +25,13 @@ export function InvestmentHorizonStep({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-          <Hourglass className="size-5" aria-hidden />
-        </span>
-        <div>
-          <h1 className="font-display text-xl font-medium">Por quanto tempo queres investir?</h1>
-          <p className="mt-1 text-sm text-muted">
-            Pensa em quando esperas precisar deste dinheiro de volta.
-          </p>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl font-medium">Por quanto tempo queres investir?</h1>
+        <p className="text-base text-muted">Pensa em quando esperas precisar deste dinheiro de volta.</p>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {INVESTMENT_HORIZON_OPTIONS.map((option) => (
           <OptionButton
             key={option.value}

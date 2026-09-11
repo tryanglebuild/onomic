@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { StepIndicator } from './step-indicator'
+import { OnboardingSidePanel } from './onboarding-side-panel'
 import { GoalsStep } from './steps/goals-step'
 import { InvestmentHorizonStep } from './steps/investment-horizon-step'
 import { InvestmentExperienceStep } from './steps/investment-experience-step'
@@ -40,61 +40,63 @@ export function OnboardingFlow({
   }
 
   return (
-    <div>
-      <StepIndicator currentStep={step} />
-      {step === 1 && (
-        <GoalsStep initialGoals={profile.primary_goals} onAdvance={() => setStep(2)} onSkip={skip} />
-      )}
-      {step === 2 && (
-        <InvestmentHorizonStep
-          initialHorizon={profile.investment_horizon}
-          onAdvance={() => setStep(3)}
-          onBack={() => goBack(1)}
-          onSkip={skip}
-        />
-      )}
-      {step === 3 && (
-        <InvestmentExperienceStep
-          initialExperience={profile.investment_experience}
-          onAdvance={() => setStep(4)}
-          onBack={() => goBack(2)}
-          onSkip={skip}
-        />
-      )}
-      {step === 4 && (
-        <LossReactionStep
-          initialReaction={profile.loss_reaction}
-          onAdvance={() => setStep(5)}
-          onBack={() => goBack(3)}
-          onSkip={skip}
-        />
-      )}
-      {step === 5 && (
-        <InvestmentPurposeStep
-          initialPurposes={profile.investment_purpose}
-          onAdvance={() => setStep(6)}
-          onBack={() => goBack(4)}
-          onSkip={skip}
-        />
-      )}
-      {step === 6 && (
-        <InvestmentTargetStep
-          initialAmount={profile.investment_target_amount}
-          initialFrequency={profile.investment_target_frequency}
-          onAdvance={() => setStep(7)}
-          onBack={() => goBack(5)}
-          onSkip={skip}
-        />
-      )}
-      {step === 7 && (
-        <AssetPreferencesStep
-          initialPreferences={profile.asset_preferences}
-          onAdvance={() => setStep(8)}
-          onBack={() => goBack(6)}
-          onSkip={skip}
-        />
-      )}
-      {step === 8 && <SummaryStep profile={profile} onBack={() => goBack(7)} onComplete={onClose} />}
+    <div className="flex max-h-[88vh] flex-col overflow-y-auto sm:flex-row">
+      <OnboardingSidePanel currentStep={step} />
+      <div className="flex-1 px-6 py-6 sm:px-14 sm:py-12">
+        {step === 1 && (
+          <GoalsStep initialGoals={profile.primary_goals} onAdvance={() => setStep(2)} onSkip={skip} />
+        )}
+        {step === 2 && (
+          <InvestmentHorizonStep
+            initialHorizon={profile.investment_horizon}
+            onAdvance={() => setStep(3)}
+            onBack={() => goBack(1)}
+            onSkip={skip}
+          />
+        )}
+        {step === 3 && (
+          <InvestmentExperienceStep
+            initialExperience={profile.investment_experience}
+            onAdvance={() => setStep(4)}
+            onBack={() => goBack(2)}
+            onSkip={skip}
+          />
+        )}
+        {step === 4 && (
+          <LossReactionStep
+            initialReaction={profile.loss_reaction}
+            onAdvance={() => setStep(5)}
+            onBack={() => goBack(3)}
+            onSkip={skip}
+          />
+        )}
+        {step === 5 && (
+          <InvestmentPurposeStep
+            initialPurposes={profile.investment_purpose}
+            onAdvance={() => setStep(6)}
+            onBack={() => goBack(4)}
+            onSkip={skip}
+          />
+        )}
+        {step === 6 && (
+          <InvestmentTargetStep
+            initialAmount={profile.investment_target_amount}
+            initialFrequency={profile.investment_target_frequency}
+            onAdvance={() => setStep(7)}
+            onBack={() => goBack(5)}
+            onSkip={skip}
+          />
+        )}
+        {step === 7 && (
+          <AssetPreferencesStep
+            initialPreferences={profile.asset_preferences}
+            onAdvance={() => setStep(8)}
+            onBack={() => goBack(6)}
+            onSkip={skip}
+          />
+        )}
+        {step === 8 && <SummaryStep profile={profile} onBack={() => goBack(7)} onComplete={onClose} />}
+      </div>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { TrendingDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { OptionButton } from '../option-button'
 import { LOSS_REACTION_OPTIONS, type LossReaction } from '@/lib/onboarding/steps'
@@ -26,18 +25,13 @@ export function LossReactionStep({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-          <TrendingDown className="size-5" aria-hidden />
-        </span>
-        <div>
-          <h1 className="font-display text-xl font-medium">Se o teu investimento caísse 20%, o que farias?</h1>
-          <p className="mt-1 text-sm text-muted">Não há resposta certa — só queremos perceber a tua reação real.</p>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl font-medium">Se o teu investimento caísse 20%, o que farias?</h1>
+        <p className="text-base text-muted">Não há resposta certa — só queremos perceber a tua reação real.</p>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {LOSS_REACTION_OPTIONS.map((option) => (
           <OptionButton
             key={option.value}

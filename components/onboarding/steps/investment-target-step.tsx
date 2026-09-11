@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,17 +29,12 @@ export function InvestmentTargetStep({
   const hasValidAmount = parsedAmount !== null && parsedAmount > 0
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-          <TrendingUp className="size-5" aria-hidden />
-        </span>
-        <div>
-          <h1 className="font-display text-xl font-medium">Tens uma meta de investimento?</h1>
-          <p className="mt-1 text-sm text-muted">
-            Deixa em branco se ainda não investes, mas queres começar — também é uma resposta válida.
-          </p>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl font-medium">Tens uma meta de investimento?</h1>
+        <p className="text-base text-muted">
+          Deixa em branco se ainda não investes, mas queres começar — também é uma resposta válida.
+        </p>
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -61,7 +55,7 @@ export function InvestmentTargetStep({
       </div>
 
       {hasValidAmount && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Label>Frequência</Label>
           {INVESTMENT_FREQUENCY_OPTIONS.map((option) => (
             <OptionButton

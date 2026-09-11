@@ -28,7 +28,7 @@ export function SidebarNavItem({
         onClick={onNavigate}
         className={cn(
           'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-          active ? 'bg-primary-soft text-primary-ink' : 'text-ink-soft hover:bg-surface-sunken hover:text-ink',
+          active ? 'bg-white/10 text-white' : 'text-navy-ink hover:bg-white/5 hover:text-white',
           collapsed && 'justify-center px-2'
         )}
       >
@@ -60,7 +60,7 @@ export function SidebarNavItem({
         title={collapsed ? item.label : undefined}
         className={cn(
           'group flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-          active ? 'bg-primary-soft text-primary-ink' : 'text-ink-soft hover:bg-surface-sunken hover:text-ink',
+          active ? 'bg-white/10 text-white' : 'text-navy-ink hover:bg-white/5 hover:text-white',
           collapsed && 'justify-center px-2'
         )}
       >
@@ -84,7 +84,7 @@ export function SidebarNavItem({
               onClick={onNavigate}
               className={cn(
                 'rounded-md px-2.5 py-1.5 text-sm transition-colors',
-                pathname === child.href ? 'font-medium text-primary-strong' : 'text-ink-soft hover:text-ink'
+                pathname === child.href ? 'font-medium text-primary' : 'text-navy-ink hover:text-white'
               )}
             >
               {child.label}

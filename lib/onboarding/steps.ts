@@ -71,15 +71,55 @@ export const ASSET_PREFERENCE_OPTIONS: { value: AssetPreference; label: string }
   { value: 'undecided', label: 'Ainda não sei' },
 ]
 
-export const ONBOARDING_STEPS: { step: number; title: string; icon: LucideIcon }[] = [
-  { step: 1, title: 'Objetivo', icon: Compass },
-  { step: 2, title: 'Horizonte temporal', icon: Hourglass },
-  { step: 3, title: 'Experiência', icon: GraduationCap },
-  { step: 4, title: 'Reação a uma queda', icon: TrendingDown },
-  { step: 5, title: 'Propósito', icon: Target },
-  { step: 6, title: 'Meta de investimento', icon: TrendingUp },
-  { step: 7, title: 'Preferência de ativos', icon: Layers },
-  { step: 8, title: 'Resumo', icon: CheckCircle2 },
+export const ONBOARDING_STEPS: { step: number; title: string; icon: LucideIcon; blurb: string }[] = [
+  {
+    step: 1,
+    title: 'Objetivo',
+    icon: Compass,
+    blurb: 'Para adaptar o dashboard e as sugestões ao que realmente procuras na plataforma.',
+  },
+  {
+    step: 2,
+    title: 'Horizonte temporal',
+    icon: Hourglass,
+    blurb: 'O prazo influencia diretamente o nível de risco que faz sentido para ti.',
+  },
+  {
+    step: 3,
+    title: 'Experiência',
+    icon: GraduationCap,
+    blurb: 'Ajuda-nos a calibrar a linguagem e as sugestões ao teu nível de confiança.',
+  },
+  {
+    step: 4,
+    title: 'Reação a uma queda',
+    icon: TrendingDown,
+    blurb: 'É o fator que mais pesa no cálculo do teu perfil de risco.',
+  },
+  {
+    step: 5,
+    title: 'Propósito',
+    icon: Target,
+    blurb: 'Saber para que investes ajuda-nos a sugerir prazos e produtos mais adequados.',
+  },
+  {
+    step: 6,
+    title: 'Meta de investimento',
+    icon: TrendingUp,
+    blurb: 'Usamos isto só para acompanhar o teu progresso — podes ajustar sempre que quiseres.',
+  },
+  {
+    step: 7,
+    title: 'Preferência de ativos',
+    icon: Layers,
+    blurb: 'Para filtrar o que te mostramos primeiro nos mercados e simulações.',
+  },
+  {
+    step: 8,
+    title: 'Resumo',
+    icon: CheckCircle2,
+    blurb: 'Confirma tudo antes de continuar — podes sempre editar mais tarde nas definições.',
+  },
 ]
 
 export const TOTAL_ONBOARDING_STEPS = ONBOARDING_STEPS.length

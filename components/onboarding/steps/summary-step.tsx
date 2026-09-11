@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { Compass, GraduationCap, Hourglass, Layers, ShieldCheck, Target, TrendingDown, TrendingUp } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   PRIMARY_GOAL_OPTIONS,
   INVESTMENT_HORIZON_OPTIONS,
@@ -24,6 +26,28 @@ function labelsFor(values: string[], options: { value: string; label: string }[]
   return labels.length > 0 ? labels.join(', ') : 'Não respondido'
 }
 
+function SummaryRow({
+  icon: Icon,
+  label,
+  value,
+  emphasize,
+}: {
+  icon: LucideIcon
+  label: string
+  value: string
+  emphasize?: boolean
+}) {
+  return (
+    <div className={cn('flex items-center justify-between gap-4 px-5 py-4', emphasize && 'bg-primary-soft/40')}>
+      <span className="flex items-center gap-2.5 text-muted">
+        <Icon className="size-4 shrink-0" aria-hidden />
+        {label}
+      </span>
+      <span className="text-right font-medium text-ink">{value}</span>
+    </div>
+  )
+}
+
 export function SummaryStep({
   profile,
   onBack,
@@ -42,74 +66,72 @@ export function SummaryStep({
       : 'Não respondido'
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <span className="flex size-10 items-center justify-center rounded-full bg-primary-soft text-primary-ink">
-          <CheckCircle2 className="size-5" aria-hidden />
-        </span>
-        <div>
-          <h1 className="font-display text-xl font-medium">Está quase</h1>
-          <p className="mt-1 text-sm text-muted">Confirma o que respondeste — podes voltar atrás para mudar algo.</p>
-        </div>
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl font-medium">Está quase</h1>
+        <p className="text-base text-muted">Confirma o que respondeste — podes voltar atrás para mudar algo.</p>
       </div>
 
-      <dl className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 text-sm">
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Objetivo</dt>
-          <dd className="text-right font-medium">{labelsFor(profile.primary_goals, PRIMARY_GOAL_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Horizonte temporal</dt>
-          <dd className="text-right font-medium">{labelFor(profile.investment_horizon, INVESTMENT_HORIZON_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Experiência</dt>
-          <dd className="text-right font-medium">{labelFor(profile.investment_experience, INVESTMENT_EXPERIENCE_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Reação a uma queda</dt>
-          <dd className="text-right font-medium">{labelFor(profile.loss_reaction, LOSS_REACTION_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Propósito</dt>
-          <dd className="text-right font-medium">{labelsFor(profile.investment_purpose, INVESTMENT_PURPOSE_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4 border-t border-border pt-3">
-          <dt className="text-muted">O teu perfil</dt>
-          <dd className="text-right font-medium">{labelFor(profile.risk_profile, RISK_PROFILE_OPTIONS)}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Meta de investimento</dt>
-          <dd className="text-right font-medium">{targetLabel}</dd>
-        </div>
-        <div className="flex justify-between gap-4">
-          <dt className="text-muted">Preferência de ativos</dt>
-          <dd className="text-right font-medium">{labelsFor(profile.asset_preferences, ASSET_PREFERENCE_OPTIONS)}</dd>
-        </div>
-      </dl>
-
-      <div className="flex items-center justify-between">
-        <button type="button" onClick={onBack} className="text-sm text-muted hover:text-ink">
-          Voltar
-        </button>
-        <Button
-          disabled={isPending}
-          onClick={() =>
-            startTransition(async () => {
-              try {
-                setError(null)
-                await completeOnboarding()
-                onComplete()
-              } catch {
-                setError('Não foi possível guardar. Tenta novamente.')
-              }
-            })
-          }
-        >
-          Concluir
-        </Button>
+      <div className="flex flex-col divide-y divide-border overflow-hidden rounded-lg border border-border text-sm">
+        <SummaryRow icon={Compass} label="Objetivo" value={labelsFor(profile.primary_goals, PRIMARY_GOAL_OPTIONS)} />
+        <SummaryRow
+          icon={Hourglass}
+          label="Horizonte temporal"
+          value={labelFor(profile.investment_horizon, INVESTMENT_HORIZON_OPTIONS)}
+        />
+        <SummaryRow
+          icon={GraduationCap}
+          label="Experiência"
+          value={labelFor(profile.investment_experience, INVESTMENT_EXPERIENCE_OPTIONS)}
+        />
+        <SummaryRow
+          icon={TrendingDown}
+          label="Reação a uma queda"
+          value={labelFor(profile.loss_reaction, LOSS_REACTION_OPTIONS)}
+        />
+        <SummaryRow
+          icon={Target}
+          label="Propósito"
+          value={labelsFor(profile.investment_purpose, INVESTMENT_PURPOSE_OPTIONS)}
+        />
+        <SummaryRow
+          icon={ShieldCheck}
+          label="O teu perfil"
+          value={labelFor(profile.risk_profile, RISK_PROFILE_OPTIONS)}
+          emphasize
+        />
+        <SummaryRow icon={TrendingUp} label="Meta de investimento" value={targetLabel} />
+        <SummaryRow
+          icon={Layers}
+          label="Preferência de ativos"
+          value={labelsFor(profile.asset_preferences, ASSET_PREFERENCE_OPTIONS)}
+        />
       </div>
-      {error && <p className="text-sm text-danger">{error}</p>}
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between">
+          <button type="button" onClick={onBack} className="text-sm text-muted hover:text-ink">
+            Voltar
+          </button>
+          <Button
+            disabled={isPending}
+            onClick={() =>
+              startTransition(async () => {
+                try {
+                  setError(null)
+                  await completeOnboarding()
+                  onComplete()
+                } catch {
+                  setError('Não foi possível guardar. Tenta novamente.')
+                }
+              })
+            }
+          >
+            Concluir
+          </Button>
+        </div>
+        {error && <p className="text-sm text-danger">{error}</p>}
+      </div>
     </div>
   )
 }
