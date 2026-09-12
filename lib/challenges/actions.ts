@@ -18,7 +18,8 @@ async function requireUser() {
 
 function assertValidChallenge(name: string, targetValue: number, metricType: MetricType, startDate: string, endDate: string, baselineValue: number | null) {
   if (!name.trim()) throw new Error('name_required')
-  if (!(targetValue > 0)) throw new Error('target_invalid')
+  const targetIsValid = metricType === 'no_spend_streak' ? targetValue >= 0 : targetValue > 0
+  if (!targetIsValid) throw new Error('target_invalid')
   if (!VALID_METRIC_TYPES.includes(metricType)) throw new Error('metric_type_invalid')
   if (!(endDate > startDate)) throw new Error('date_range_invalid')
   if (metricType === 'category_reduction' && (baselineValue === null || baselineValue < 0)) {

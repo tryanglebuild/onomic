@@ -20,6 +20,7 @@ For instructions on how to create a new feature folder and what each document sh
 | [CSV Import](#csv-import) | 🟠 Draft | Bulk-import transaction history from a bank-exported CSV | 2026-09-06 | 2026-09-06 |
 | [AI Transaction Categorization](#ai-transaction-categorization) | 🟠 Draft | Suggest a transaction's category via LLM, confirmed by the user | 2026-09-06 | 2026-09-06 |
 | [Savings Vaults](#savings-vaults) | 🟠 Draft | Revolut/Nubank-style savings goals via virtual allocation, individual + shared | 2026-09-06 | 2026-09-06 |
+| [Challenge Suggestions (AI)](#challenge-suggestions-ai) | 🟠 Draft | Auto-suggest challenges from a workspace's recurring expenses/income, shown as accept/dismiss cards | 2026-09-12 | 2026-09-12 |
 
 ---
 
@@ -244,6 +245,43 @@ Turns financial goals into something actively tracked, not just declared, withou
 | 6 | List page + create-challenge dialog | ✅ Done (1 fix round) |
 | 7 | Detail page + add-entry/edit/abandon/delete | ✅ Done (1 fix round) |
 | — | Final whole-branch review + fix round | ✅ Done, approved-as-is |
+
+---
+
+### Challenge Suggestions (AI)
+
+**Folder:** [`challenge-suggestions/`](./challenge-suggestions/)
+**Status:** 🟠 Draft
+**Created:** 2026-09-12 00:00
+**Last updated:** 2026-09-12 00:00
+
+#### What It Enables
+
+A workspace can request auto-generated challenge suggestions derived from its own recurring expenses/income and existing challenge history, shown as distinct cards the user must explicitly accept (which creates a real challenge via the existing `createChallenge()`) or dismiss.
+
+#### Why It Matters
+
+Financial Challenges only starts from a blank form or a static template today — nothing points the user at an opportunity they haven't noticed themselves. This is also the first feature to actually exercise the "AI-legible" data model Financial Challenges was deliberately built with (`getChallengeSummary()` as a stable read contract), extending the same discipline to generation: a typed context in, a typed suggestion out, human confirmation always required before anything becomes real.
+
+#### Scope
+
+- New `challenge_suggestions` table (workspace-scoped, `pending`/`accepted`/`dismissed`), written only by `service_role` — no member can insert one directly
+- `getSuggestionContext(workspaceId)` + a pure, deterministic `generateChallengeSuggestions()` — v1 heuristics run over `recurring_expenses`/`income_sources` (via the same monthly-equivalent normalization `lib/dashboard/overview.ts` already does), not over real transaction history
+- Suggestion cards on the "Desafios" page, visually distinct from real challenges, with Accept/Dismiss actions and a dedup key so the same suggestion doesn't reappear once resolved
+- Excludes (v1): real pattern detection over transaction history (blocked on Manual Transactions, still Draft), an actual LLM call (v1 is rule-based; the generator's contract is designed to swap in one later without changing callers), scheduled/background generation (v1 is request-only), confidence scoring, editing a suggestion before accepting
+
+#### Documents
+
+| Document | Purpose | Status |
+|---|---|---|
+| [feature-spec.md](./challenge-suggestions/feature-spec.md) | Product spec — user flow, decisions, data model, security | Draft |
+| implementation-plan.md | Technical plan with SQL, Server Actions, and UI | Not created yet |
+
+#### Phase Tracker
+
+| Phase | Description | Status |
+|---|---|---|
+| — | Implementation plan not yet written | ⬜ Not started |
 
 ---
 

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
+import { X, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,8 +26,13 @@ export function EditChallengeDialog({ summary }: { summary: ChallengeSummary }) 
       setError('Indique um nome.')
       return
     }
-    if (!(parsedTarget > 0)) {
-      setError('Indique um valor alvo superior a zero.')
+    const targetIsValid = summary.metricType === 'no_spend_streak' ? parsedTarget >= 0 : parsedTarget > 0
+    if (!targetIsValid) {
+      setError(
+        summary.metricType === 'no_spend_streak'
+          ? 'Indique um número de dias válido (0 ou mais).'
+          : 'Indique um valor alvo superior a zero.'
+      )
       return
     }
     if (!(endDate > startDate)) {
@@ -78,7 +83,7 @@ export function EditChallengeDialog({ summary }: { summary: ChallengeSummary }) 
             </Dialog.Close>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} noValidate className="mt-6 flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="edit-name">Nome</Label>
               <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -91,8 +96,8 @@ export function EditChallengeDialog({ summary }: { summary: ChallengeSummary }) 
               <Input
                 id="edit-target"
                 type="number"
-                min="0.01"
-                step="0.01"
+                min={summary.metricType === 'no_spend_streak' ? '0' : '0.01'}
+                step={summary.metricType === 'no_spend_streak' ? '1' : '0.01'}
                 value={targetValue}
                 onChange={(e) => setTargetValue(e.target.value)}
               />
@@ -123,7 +128,12 @@ export function EditChallengeDialog({ summary }: { summary: ChallengeSummary }) 
               </div>
             </div>
 
-            {error && <p className="text-sm text-danger">{error}</p>}
+            {error && (
+              <div className="flex items-start gap-2 rounded-lg border border-danger/20 bg-danger/10 px-3 py-2.5 text-sm text-danger">
+                <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
+                <p>{error}</p>
+              </div>
+            )}
 
             <Button type="submit" disabled={isPending} className="mt-2">
               Guardar

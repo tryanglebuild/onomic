@@ -1,13 +1,16 @@
 # Financial Challenges — Runbook
 
-**Status:** Implemented, tested, code-reviewed. Not yet applied to the real hosted Supabase project. Not yet committed (per standing no-autonomous-commit rule) — everything is in the working tree on `feature/user-identity`.
+**Status:** Implemented, tested, code-reviewed. **Correction (2026-09-12):** an earlier version of this doc claimed migrations 008/009 had not been applied to the hosted project — that was wrong. `.env.local` actually points `next dev` at the real hosted Supabase project (`ksagwqewkodflplzdplk.supabase.co`), not the local Docker stack, and migrations 008/009 were already live there. Not yet committed (per standing no-autonomous-commit rule) — everything is in the working tree on `feature/user-identity`.
 
-## 1. Migrations to apply (in order)
+## 1. Migrations
 
-- `supabase/migrations/20260912120000_008_financial_challenges.sql` — `challenge_templates`, `financial_challenges`, `challenge_entries`, triggers, RLS, grants (including the delete policy/grant added during the final fix round).
-- `supabase/migrations/20260913000000_009_challenge_member_labels.sql` — replaces `get_workspace_members_with_email` to add `full_name`/`handle` columns via a `left join profiles`. Safe: only 2 other callers of that function exist (`app/(dashboard)/settings/family/page.tsx`, `app/(dashboard)/dashboard/page.tsx`), both unaffected by additive columns.
+- `supabase/migrations/20260912120000_008_financial_challenges.sql` — `challenge_templates`, `financial_challenges`, `challenge_entries`, triggers, RLS, grants (including the delete policy/grant added during the final fix round). **Already applied to hosted** — do not edit in place going forward; ship further changes as new migrations, same as 009/010.
+- `supabase/migrations/20260913000000_009_challenge_member_labels.sql` — replaces `get_workspace_members_with_email` to add `full_name`/`handle` columns via a `left join profiles`. Safe: only 2 other callers of that function exist (`app/(dashboard)/settings/family/page.tsx`, `app/(dashboard)/dashboard/page.tsx`), both unaffected by additive columns. **Already applied to hosted.**
+- `supabase/migrations/20260914000000_010_no_spend_streak_target_zero.sql` — relaxes `financial_challenges`'s target-value CHECK so `no_spend_streak` alone may target 0 days; every other metric type still requires a strictly positive target. **Applied to hosted** (2026-09-12, via `supabase db push` after the project was linked and 001-009 were marked `applied` in the remote migration history with `supabase migration repair` — the remote history table was previously empty, since 001-009 had been applied out-of-band without ever going through the CLI). `supabase migration list` now shows all 10 migrations matched local↔remote.
 
-Neither migration has been applied to the hosted project. Apply both, in order, before this feature can go live.
+## 1a. Dev server points at the hosted project, not local
+
+`.env.local` carries the real project's URL/keys, and `next dev` reads `.env.local` — so testing locally (signup, creating challenges, etc.) writes to the same hosted database production code will eventually run against, not a disposable local copy. `.env.test.local` (local Docker stack creds) is only used by the Vitest RLS integration suite, not by the running dev server. Keep this in mind before creating test accounts/data by hand or via browser automation — they land on the real project. A `supabase db reset` only rebuilds the *local* stack (`127.0.0.1:54322`) and has no effect on hosted data or schema.
 
 ## 2. Local dev-stack quirk (recurring across this repo's features)
 
@@ -34,6 +37,10 @@ This is **local-only** — never run on the real hosted Supabase project, and ne
 - Task 1: migration written with `service_role` grants included from the start (lesson carried over from an earlier feature's SDD run in this repo).
 - Task 4: user explicitly authorized a one-time local-only `GRANT` fix on pre-existing tables to unblock RLS integration tests (see §2 above).
 - Final fix round: the same local-only GRANT fix was reapplied after a `supabase db reset` wiped it; the fix round's implementer was careful to re-run migration 004's `profiles.role` column-scoped revoke/grant afterward so that column didn't get reopened to blanket UPDATE. Independently verified by the scoped re-review.
+
+## 4a. Test-account cleanup attempted, partially blocked
+
+This session's UI polish work (dialog redesign, date picker, etc.) was verified via browser automation against the hosted project (see §1a) — this created ~49 throwaway `*@example.com` accounts between 2026-09-09 and 2026-09-12. With explicit user authorization, cleanup was attempted via the Auth Admin API (service role key): child rows in `financial_challenges`/`challenge_entries`/`workspace_invites` (the only non-cascading FKs to `auth.users`) were deleted first, but `admin.auth.admin.deleteUser()` still failed for every account with a generic "Database error deleting user" (500) — the real cause wasn't identifiable from the client-visible error, and diagnosing further would need direct access to the project's Postgres/Auth logs (Supabase Studio), which wasn't available in this session. **The ~49 test accounts are still present on the hosted project** — cost if left as-is: harmless clutter (recognizable by their `@example.com`/test-prefixed emails), but should be cleaned up via Supabase Studio (Auth → Users) or by someone with dashboard/log access when convenient.
 
 ## 5. Test coverage
 

@@ -12,6 +12,7 @@ const buttonVariants = cva(
           "bg-primary text-white hover:bg-primary-strong shadow-soft",
         navy: "bg-navy text-white hover:bg-navy-soft",
         moss: "bg-moss text-white hover:bg-moss-strong shadow-soft",
+        danger: "bg-danger text-white hover:opacity-90 shadow-soft",
         outline:
           "border border-border-strong bg-transparent text-ink hover:bg-surface-sunken",
         ghost: "bg-transparent text-ink hover:bg-surface-sunken",

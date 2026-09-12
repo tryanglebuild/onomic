@@ -46,3 +46,5 @@ next-env.d.ts
 
 # vitest json reporter output
 .vitest/
+
+supabase/.temp/
