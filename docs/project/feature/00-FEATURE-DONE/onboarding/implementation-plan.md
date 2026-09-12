@@ -1,7 +1,7 @@
 # Implementation Plan — Onboarding
 
 **Feature spec:** docs/project/feature/onboarding/feature-spec.md
-**Status:** Planned (v2 — modal + expanded investor profile)
+**Status:** Implemented (v2 — modal + expanded investor profile)
 **Created:** 2026-09-10
 **Last updated:** 2026-09-11
 **Author:** Leandro Oliveira

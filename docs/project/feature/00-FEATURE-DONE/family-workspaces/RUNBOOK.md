@@ -1,6 +1,8 @@
 # Family Workspaces — Runbook (applying migrations for real)
 
-This feature was built with all live Supabase work deliberately deferred (per project-owner decision) — the code, migrations, and tests exist and compile, but nothing has ever been applied to or run against a real Postgres/Supabase instance. This document is the checklist for the first time that happens.
+**Update (2026-09-11):** these migrations have since been applied to the real hosted Supabase project — confirmed by repeated end-to-end signup/handle/workspace-creation runs against it throughout later feature work (Onboarding, Manual Income & Recurring Expenses, Dashboard Overview Widgets), all of which depend on this schema being live. The checklist below is kept as a historical record of what was verified, and §6's known limitation (cascade deletes) is still real and unfixed — read that section before ever building account/workspace deletion.
+
+This feature was originally built with all live Supabase work deliberately deferred (per project-owner decision) — the code, migrations, and tests existed and compiled, but nothing had been applied to or run against a real Postgres/Supabase instance yet. This document was the checklist for the first time that happened.
 
 ## 1. Migration order
 

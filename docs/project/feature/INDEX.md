@@ -1,7 +1,7 @@
 # Feature Index — Onomic
 
 **Created:** 2026-09-06 00:00
-**Last updated:** 2026-09-11 00:00
+**Last updated:** 2026-09-12 00:00
 
 This is a living document. It tracks every feature that has been conceived, planned, or shipped in the Onomic project. Update this file whenever a feature is created, progresses to a new status, or is completed.
 
@@ -15,21 +15,24 @@ For instructions on how to create a new feature folder and what each document sh
 
 | Feature | Status | Description | Created | Last Updated |
 |---|---|---|---|---|
-| [Onboarding](#onboarding) | 🟡 Planned | Resumable 8-step onboarding modal over /dashboard — objective, computed risk profile via behavioral questions, investment target, asset preference | 2026-09-10 | 2026-09-11 |
-| [Family Workspaces](#family-workspaces) | 🔵 In Progress | Multi-tenant foundation — personal + shared family spaces with isolated data (RLS) + platform RBAC foundation | 2026-09-06 | 2026-09-07 |
-| [User Identity: Handle & Avatar](#user-identity-handle--avatar) | 🟠 Draft | Unique `@handle` chosen at signup + self-service avatar upload, extending `profiles` | 2026-09-07 | 2026-09-07 |
 | [Manual Transactions](#manual-transactions) | 🟠 Draft | Record categorized expenses/income within a workspace | 2026-09-06 | 2026-09-06 |
 | [Recurring Transactions](#recurring-transactions) | 🟠 Draft | Auto-generate fixed monthly/weekly/yearly expenses and income | 2026-09-06 | 2026-09-06 |
 | [CSV Import](#csv-import) | 🟠 Draft | Bulk-import transaction history from a bank-exported CSV | 2026-09-06 | 2026-09-06 |
 | [AI Transaction Categorization](#ai-transaction-categorization) | 🟠 Draft | Suggest a transaction's category via LLM, confirmed by the user | 2026-09-06 | 2026-09-06 |
 | [Savings Vaults](#savings-vaults) | 🟠 Draft | Revolut/Nubank-style savings goals via virtual allocation, individual + shared | 2026-09-06 | 2026-09-06 |
-| [Financial Challenges](#financial-challenges) | 🟠 Draft | Time-boxed financial goals (templates + custom) with progress derived from transactions | 2026-09-06 | 2026-09-06 |
 
 ---
 
 ## Shipped Features
 
-_No shipped features documented yet._
+| Feature | Status | Description | Created | Last Updated |
+|---|---|---|---|---|
+| [Family Workspaces](#family-workspaces) | 🟢 Shipped | Multi-tenant foundation — personal + shared family spaces with isolated data (RLS) + platform RBAC foundation | 2026-09-06 | 2026-09-11 |
+| [User Identity: Handle & Avatar](#user-identity-handle--avatar) | 🟢 Shipped | Unique `@handle` chosen at signup + self-service avatar upload, extending `profiles` | 2026-09-07 | 2026-09-11 |
+| [Onboarding](#onboarding) | 🟢 Shipped | Resumable 8-step onboarding modal over /dashboard — objective, computed risk profile via behavioral questions, investment target, asset preference | 2026-09-10 | 2026-09-11 |
+| [Financial Challenges](#financial-challenges) | 🟢 Shipped | Time-boxed financial goals (templates + custom), progress derived from a per-challenge entries log — no Manual Transactions/Savings Vaults dependency | 2026-09-06 | 2026-09-12 |
+
+Docs for shipped features move to [`00-FEATURE-DONE/`](./00-FEATURE-DONE/).
 
 ---
 
@@ -58,8 +61,8 @@ _Features mentioned during planning but not yet documented with a spec of their 
 
 ### Onboarding
 
-**Folder:** [`onboarding/`](./onboarding/)
-**Status:** 🟡 Planned (v2 — modal + expanded investor profile) — spec and implementation plan both complete, implementation not yet started. v1 (5-step page) is committed but superseded by this revision before ever being applied to a database.
+**Folder:** [`00-FEATURE-DONE/onboarding/`](./00-FEATURE-DONE/onboarding/)
+**Status:** 🟢 Shipped (v2 — modal + expanded investor profile) — all 7 phases implemented, code-reviewed, and verified against the spec (schema, types, risk scoring, step UI, modal behavior, auto-open, route stub, signup redirect, navbar reminder, RLS all confirmed live in the codebase). v1 (5-step page) is superseded by this revision.
 **Created:** 2026-09-10 00:00
 **Last updated:** 2026-09-11 00:00
 
@@ -83,29 +86,31 @@ Every future AI/recommendation feature (Investment Tracking, AI Financial Adviso
 
 | Document | Purpose | Status |
 |---|---|---|
-| [feature-spec.md](./onboarding/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved (v2) |
-| [implementation-plan.md](./onboarding/implementation-plan.md) | 7-phase technical plan with SQL, Server Actions, and UI | Planned — not yet implemented |
+| [feature-spec.md](./00-FEATURE-DONE/onboarding/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved (v2) |
+| [implementation-plan.md](./00-FEATURE-DONE/onboarding/implementation-plan.md) | 7-phase technical plan with SQL, Server Actions, and UI | Implemented |
 
 #### Phase Tracker
 
 | Phase | Description | Status |
 |---|---|---|
-| 1 | Migration edit: 4 new columns, drop `skipped_at`, `current_step` range 1–8 | ⬜ Not started |
-| 2 | Hand-authored types | ⬜ Not started |
-| 3 | Risk scoring (tested) + step data + Server Actions | ⬜ Not started |
-| 4 | 8 step components (4 new, 3 edited, 1 deleted) | ⬜ Not started |
-| 5 | Radix Dialog modal, flow controller, auto-open detector, route stub | ⬜ Not started |
-| 6 | Dashboard shell/navbar/reminder integration | ⬜ Not started |
-| 7 | Signup redirect | ⬜ Not started |
+| 1 | Migration edit: 4 new columns, drop `skipped_at`, `current_step` range 1–8 | ✅ Done |
+| 2 | Hand-authored types | ✅ Done |
+| 3 | Risk scoring (tested) + step data + Server Actions | ✅ Done |
+| 4 | 8 step components (4 new, 3 edited, 1 deleted) | ✅ Done |
+| 5 | Radix Dialog modal, flow controller, auto-open detector, route stub | ✅ Done |
+| 6 | Dashboard shell/navbar/reminder integration | ✅ Done |
+| 7 | Signup redirect | ✅ Done |
+
+Note: the modal's final visual design (navy split-panel with an integrated step indicator) and the flow controller (owns `current_step` as internal state rather than a parent-supplied prop) evolved past this plan's original code during a later design pass — the phases above are functionally complete against the feature spec, not necessarily byte-for-byte against this plan's original snippets.
 
 ---
 
 ### Family Workspaces
 
-**Folder:** [`family-workspaces/`](./family-workspaces/)
-**Status:** 🔵 In Progress — all 11 tasks implemented and code-reviewed (including a final whole-branch review with a fix wave); migrations have never been applied to a live database (deliberately deferred). See [`RUNBOOK.md`](./family-workspaces/RUNBOOK.md) before applying them for the first time, including one known parked limitation (cascade deletes currently blocked).
+**Folder:** [`00-FEATURE-DONE/family-workspaces/`](./00-FEATURE-DONE/family-workspaces/)
+**Status:** 🟢 Shipped — all 11 tasks implemented, code-reviewed, and confirmed live on the real hosted Supabase project (verified via repeated end-to-end signup/workspace-creation runs during later feature work). One known limitation remains genuinely open, not just documentation staleness: cascade deletes are still blocked (see [`RUNBOOK.md`](./00-FEATURE-DONE/family-workspaces/RUNBOOK.md) §6) — fix before building any account/workspace deletion feature.
 **Created:** 2026-09-06 00:00
-**Last updated:** 2026-09-07 00:00 (all 11 tasks implemented, reviewed, and fixed via subagent-driven-development; see implementation-plan.md and RUNBOOK.md)
+**Last updated:** 2026-09-11 00:00 (confirmed live; migrations were applied to the real project at some point between 2026-09-07 and 2026-09-11 — see RUNBOOK.md)
 
 #### What It Enables
 
@@ -127,13 +132,13 @@ Every other feature in the product depends on a workspace to attach data to. Wit
 
 | Document | Purpose | Status |
 |---|---|---|
-| [feature-spec.md](./family-workspaces/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
-| [implementation-plan.md](./family-workspaces/implementation-plan.md) | 11-task technical plan with SQL, RLS, RPCs, and UI | Complete — code-reviewed, incl. final whole-branch review + fix wave |
-| [RUNBOOK.md](./family-workspaces/RUNBOOK.md) | Checklist for applying migrations for real the first time | Written, not yet executed |
+| [feature-spec.md](./00-FEATURE-DONE/family-workspaces/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
+| [implementation-plan.md](./00-FEATURE-DONE/family-workspaces/implementation-plan.md) | 11-task technical plan with SQL, RLS, RPCs, and UI | Implemented |
+| [RUNBOOK.md](./00-FEATURE-DONE/family-workspaces/RUNBOOK.md) | Migration checklist + known-limitations record | Migrations applied; §6 limitation still open |
 
 #### Phase Tracker
 
-All 11 tasks are code-complete and passed task-scoped review (some with fix rounds) plus a final whole-branch review with its own fix wave. Migrations have never been applied to a live database — see [RUNBOOK.md](./family-workspaces/RUNBOOK.md).
+All 11 tasks are code-complete and passed task-scoped review (some with fix rounds) plus a final whole-branch review with its own fix wave. Migrations are confirmed applied to the live project — see [RUNBOOK.md](./00-FEATURE-DONE/family-workspaces/RUNBOOK.md).
 
 | Phase | Description | Status |
 |---|---|---|
@@ -153,10 +158,10 @@ All 11 tasks are code-complete and passed task-scoped review (some with fix roun
 
 ### User Identity: Handle & Avatar
 
-**Folder:** [`user-identity/`](./user-identity/)
-**Status:** 🔵 In Progress — all 7 tasks implemented and code-reviewed (including a final whole-branch review with one fix wave); migration has never been applied to a live database (deliberately deferred, same as Family Workspaces — see [`RUNBOOK.md`](../family-workspaces/RUNBOOK.md))
+**Folder:** [`00-FEATURE-DONE/user-identity/`](./00-FEATURE-DONE/user-identity/)
+**Status:** 🟢 Shipped — all 7 tasks implemented, code-reviewed, and confirmed live: the signup form genuinely collects and validates a handle end-to-end against the real hosted project (verified repeatedly during later feature work). See [`RUNBOOK.md`](./00-FEATURE-DONE/family-workspaces/RUNBOOK.md) (shared with Family Workspaces, since migration 004 depends on 001-003).
 **Created:** 2026-09-07 00:00
-**Last updated:** 2026-09-07 00:00 (all 7 tasks implemented, reviewed, and fixed via subagent-driven-development; see implementation-plan.md and RUNBOOK.md)
+**Last updated:** 2026-09-11 00:00 (confirmed live; see RUNBOOK.md)
 
 #### What It Enables
 
@@ -178,12 +183,12 @@ An email address and a UUID aren't an identity users recognize each other by. Th
 
 | Document | Purpose | Status |
 |---|---|---|
-| [feature-spec.md](./user-identity/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
-| [implementation-plan.md](./user-identity/implementation-plan.md) | 7-task technical plan with SQL, RLS, Storage, and UI | Complete — code-reviewed, incl. final whole-branch review + fix wave |
+| [feature-spec.md](./00-FEATURE-DONE/user-identity/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
+| [implementation-plan.md](./00-FEATURE-DONE/user-identity/implementation-plan.md) | 7-task technical plan with SQL, RLS, Storage, and UI | Implemented |
 
 #### Phase Tracker
 
-All 7 tasks are code-complete and passed task-scoped review (Tasks 0 and 4 needed one fix round each) plus a final whole-branch review with its own fix wave (1 Critical + 6 Important findings, all fixed and re-verified). Migration has never been applied to a live database — see [`RUNBOOK.md`](../family-workspaces/RUNBOOK.md).
+All 7 tasks are code-complete and passed task-scoped review (Tasks 0 and 4 needed one fix round each) plus a final whole-branch review with its own fix wave (1 Critical + 6 Important findings, all fixed and re-verified). Migration is confirmed applied to the live project — see [`RUNBOOK.md`](./00-FEATURE-DONE/family-workspaces/RUNBOOK.md).
 
 | Phase | Description | Status |
 |---|---|---|
@@ -194,6 +199,51 @@ All 7 tasks are code-complete and passed task-scoped review (Tasks 0 and 4 neede
 | 4 | Signup form with handle field | ✅ Done |
 | 5 | Avatar upload + profile page | ✅ Done |
 | 6 | Navigation entry point | ✅ Done |
+
+---
+
+### Financial Challenges
+
+**Folder:** [`00-FEATURE-DONE/financial-challenges/`](./00-FEATURE-DONE/financial-challenges/)
+**Status:** 🟢 Shipped (v2 — entries-based progress) — all 7 tasks implemented, task-reviewed (2 needed one fix round each, both tracing to informal-register defects in the plan's own authored text), plus a final whole-branch review on the most capable model that found and fixed 3 RLS security gaps (cross-tenant workspace move, `created_by` spoofing on two insert policies), a missing spec-mandated delete capability, and several UI/test-coverage issues. Migrations not yet applied to the hosted project; nothing committed yet — see [RUNBOOK.md](./00-FEATURE-DONE/financial-challenges/RUNBOOK.md).
+**Created:** 2026-09-06 00:00
+**Last updated:** 2026-09-12 00:00
+
+#### What It Enables
+
+A user or family can activate a time-boxed financial goal — spending limit, savings target, category reduction, or no-spend streak — from a template or fully custom, with progress always calculated from a per-challenge `challenge_entries` log the user/family logs against (not a platform-wide transaction ledger, which doesn't exist yet).
+
+#### Why It Matters
+
+Turns financial goals into something actively tracked, not just declared, without waiting on Manual Transactions or Savings Vaults — neither of which exists in the codebase yet. Also the first feature deliberately structured so a future AI agent can read and cross-reference a user's/family's challenges (`getChallengeSummary()`/`listChallengeSummaries()` as the stable, typed contract).
+
+#### Scope
+
+- `challenge_templates` catalog + fully custom challenge creation
+- Progress always derived from `challenge_entries` (own table, scoped per challenge), never manually reported
+- `owner_user_id` nullable: family-shared vs. personal challenge within a shared workspace
+- Excludes (deliberately, v2): `vault_id` link to Savings Vaults (doesn't exist yet), recurring auto-relaunch, gamification, proactive deviation alerts, SQL-side pagination/aggregation for entry loading (documented tech debt, see RUNBOOK.md §3)
+
+#### Documents
+
+| Document | Purpose | Status |
+|---|---|---|
+| [feature-spec.md](./00-FEATURE-DONE/financial-challenges/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved (v2) |
+| [implementation-plan.md](./00-FEATURE-DONE/financial-challenges/implementation-plan.md) | 7-task technical plan with SQL, RLS, Server Actions, and UI | Implemented |
+| [RUNBOOK.md](./00-FEATURE-DONE/financial-challenges/RUNBOOK.md) | Migrations to apply, local dev-stack grant quirk, deferred tech debt, test coverage | Migrations pending on hosted project |
+
+#### Phase Tracker
+
+| Phase | Description | Status |
+|---|---|---|
+| 1 | Migration: `challenge_templates`/`financial_challenges`/`challenge_entries`, triggers, RLS, grants | ✅ Done |
+| 2 | Pure progress-calculation module (`lib/challenges/summary.ts`) | ✅ Done |
+| 3 | Query layer (`lib/challenges/queries.ts`) | ✅ Done |
+| 4 | RLS integration tests | ✅ Done |
+| 5 | Server actions (`lib/challenges/actions.ts`) | ✅ Done |
+| 6 | List page + create-challenge dialog | ✅ Done (1 fix round) |
+| 7 | Detail page + add-entry/edit/abandon/delete | ✅ Done (1 fix round) |
+| — | Final whole-branch review + fix round | ✅ Done, approved-as-is |
 
 ---
 
@@ -377,41 +427,6 @@ Gives users a visual, motivating way to save toward a purpose, and in family wor
 | — | Implementation plan not yet written | ⬜ Not started |
 
 ---
-
-### Financial Challenges
-
-**Folder:** [`financial-challenges/`](./financial-challenges/)
-**Status:** 🟠 Draft
-**Created:** 2026-09-06 00:00
-**Last updated:** 2026-09-06 00:00
-
-#### What It Enables
-
-A user or family can activate a time-boxed financial goal — spending limit, savings target, category reduction, or no-spend streak — from a template or fully custom, with progress always calculated from real transaction data.
-
-#### Why It Matters
-
-Turns financial goals into something actively tracked, not just declared — the product's core promise of "not just set goals, but follow through on them."
-
-#### Scope
-
-- Challenge templates catalog + custom challenge creation
-- Progress always derived from `transactions` (never manually reported)
-- Optional link to a Savings Vault
-- Excludes: recurring auto-relaunch of challenges, gamification (badges/ranking), proactive deviation alerts
-
-#### Documents
-
-| Document | Purpose | Status |
-|---|---|---|
-| [feature-spec.md](./financial-challenges/feature-spec.md) | Product spec — user flow, decisions, data model, security | Approved |
-| implementation-plan.md | N-phase technical plan with SQL, API routes, and UI | Not created yet |
-
-#### Phase Tracker
-
-| Phase | Description | Status |
-|---|---|---|
-| — | Implementation plan not yet written | ⬜ Not started |
 
 ---
 
